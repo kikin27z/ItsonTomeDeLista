@@ -1,0 +1,16 @@
+# Variables de entorno
+.env
+.env.local
+.env.production
+*.env
+
+# Base de datos
+db.sqlite3
+*.db
+
+# Archivos locales
+local_settings.py
+
+# Python
+__pycache__/
+*.pyc

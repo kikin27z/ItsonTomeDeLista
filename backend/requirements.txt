@@ -1,0 +1,21 @@
+
+# Django Core
+Django
+asgiref
+
+# Django REST Framework
+djangorestframework
+djangorestframework-simplejwt
+
+# CORS
+django-cors-headers
+
+# PostgreSQL
+psycopg2-binary
+
+# Variables de entorno
+python-dotenv
+
+# Utilidades
+pytz
+sqlparse
