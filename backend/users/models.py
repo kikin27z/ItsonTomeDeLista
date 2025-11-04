@@ -1,25 +1,27 @@
 from django.db import models
+from django.contrib.auth.models import User
 
-# Create your models here.
-class Student(models.Model):
+class Profile(models.Model):
+  USER_TYPES = {
+    "STUDENT": "Estudiante",
+    "TEACHER": "Profesor"
+  }
+  
+  user = models.OneToOneField(User, on_delete=models.CASCADE, related_name='profile')
+  user_type = models.CharField(max_length=20, choices=USER_TYPES)
+  
+  #Common fields
   first_name = models.CharField(max_length=30)
-  middle_name = models.CharField(max_length=30)
+  middle_name = models.CharField(max_length=30, null=True, blank=True)
   surname = models.CharField(max_length=60)
-  student_id = models.CharField(max_length=11)
-  email = models.EmailField(max_length=200)
-  major = models.CharField(max_length=80)
+  unique_id = models.CharField(max_length=11)
+  
+  #Student fields
+  major = models.CharField(max_length=80, null=True)
+  #Teacher fields
+  department = models.CharField(max_length=80, null=True)
   
   def __str__(self):
-    return f"ID: {self.student_id} - Alumno: {self.first_name} {self.middle_name} {self.surname} - Carrera: {self.major}"
+    return f"ID: {self.unique_id} - Name: {self.first_name} {self.middle_name} {self.surname} - Type: {self.user_type}"
   
   
-class Teacher(models.Model):
-  first_name = models.CharField(max_length=30)
-  middle_name = models.CharField(max_length=30)
-  surname = models.CharField(max_length=60)
-  profesor_id = models.CharField(max_length=11)
-  email = models.EmailField(max_length=200)
-  department = models.CharField(max_length=80)
-  
-  def __str__(self):
-    return f"ID: {self.student_id} - Profesor: {self.first_name} {self.middle_name} {self.surname} - Departamento: {self.major}"
