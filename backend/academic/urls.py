@@ -4,12 +4,37 @@ from . import views
 
 # Create a router and register your viewset
 router = DefaultRouter()
-router.register(r'courses', views.CourseViewSet, basename='course')
+router.register(r"courses", views.CourseViewSet, basename="course")
 
 # Include the router’s URLs
 urlpatterns = [
-    path('courses/massive/', views.MassiveInsertionCourse, name='massive-insertion-course'),
-    path('schedules/massive/', views.MassiveInsertionSchedule, name='massive-insertion-schedule'),
-    path('enrollments/massive/', views.MassiveInsertionEnrollment, name='massive-insertion-enrollment'),
-    path('', include(router.urls)),
+    path(
+        "courses/massive/",
+        views.MassiveInsertionCourse,
+        name="massive-insertion-course",
+    ),
+    path(
+        "schedules/massive/",
+        views.MassiveInsertionSchedule,
+        name="massive-insertion-schedule",
+    ),
+    path(
+        "schedules/assigned/", views.GetScheduleById, name="schedules-assigned-teacher"
+    ),
+    path(
+        "schedules/<str:schedule_id>/student",
+        views.GetStudentsFromSchedule,
+        name="schedule-student-list",
+    ),
+    path(
+        "schedules/<str:teacher_id>/list/",
+        views.GetScheduleById,
+        name="schedules-assigned-teacher",
+    ),
+    path(
+        "enrollments/massive/",
+        views.MassiveInsertionEnrollment,
+        name="massive-insertion-enrollment",
+    ),
+    path("", include(router.urls)),
 ]

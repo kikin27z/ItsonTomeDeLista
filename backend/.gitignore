@@ -3,6 +3,7 @@
 .env.local
 .env.production
 *.env
+.venv
 
 # Base de datos
 db.sqlite3

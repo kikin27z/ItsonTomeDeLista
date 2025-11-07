@@ -19,3 +19,7 @@ python-dotenv
 # Utilidades
 pytz
 sqlparse
+qrcode
+celery[redis,django]
+
+ruff
