@@ -1,0 +1,90 @@
+:root {
+    --blueGearSecond: #185da6;
+    --blueGearThird: #006db6;
+    --blueGearFour: #0099ff;
+    --blueGearFive: #bad7eb;
+    --white: #ffff;
+    --whiteBackground: #f8f8f8;
+    --gray: #a69999;
+    --grayDark: #666666;
+    --black: #0a0a0a;
+    --red: #f44250;
+    --green: #00a63e;
+    --yellow: #d08700;
+    --lightYellow: #fef9c2;
+    --lightGreen: #dbfce7;
+    --lightRed: #ffe2e2;
+}
+
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    font-family: "Roboto", sans-serif;
+    font-weight: 400;
+    color: var(--black);
+}
+
+#root {
+    display: flex;
+    flex-direction: column;
+}
+
+a,
+a:visited,
+a:hover {
+    text-decoration: none;
+    color: var(--black);
+}
+
+input {
+    border-style: none;
+}
+
+input:focus {
+    outline: none;
+}
+
+li {
+    list-style: none;
+}
+
+button {
+    border-style: none;
+}
+
+h1,h2,h3,button{
+    font-weight: 700;
+}
+
+h1{
+    font-size: 2rem;
+}
+h2{
+    font-size: 1.75rem;
+}
+h3{
+    font-size: 1.5rem;
+}
+h4{
+    font-size: 1.25rem;
+    font-weight: 400;
+}
+p, button{
+    font-size: 1rem;
+}
+
+.flex-column{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: .5rem;
+}
+
+.txt-c{
+    text-align: center;
+}

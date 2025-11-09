@@ -13,8 +13,9 @@ class CustomTokenObtainPairSerializer(TokenObtainPairSerializer):
         token["email"] = user.email
 
         if hasattr(user, "profile"):
-            token["user_type"] = user.profile.user_type
-            token["user_id"] = user.profile.unique_id
+            token["userType"] = user.profile.user_type
+            token["major"] = user.profile.major
+            token["name"] = user.profile.complete_name()
 
         return token
 
