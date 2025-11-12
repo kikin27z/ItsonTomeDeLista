@@ -50,6 +50,7 @@ class ScheduleSerializer(serializers.Serializer):
         max_length=12, regex=r"^(Lu)?(Ma)?(Mi)?(Ju)?(Vi)?(Sa)?$"
     )
 
+
     def create(self, validated_data):
         schedule = Schedule.objects.create(**validated_data)
         return schedule

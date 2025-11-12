@@ -1,21 +1,21 @@
+import axios from "axios";
+import type { Schedule } from "../types/academic.types";
+import { API_URL } from "../config/config";
 
-async function  requestByPost<T, S>(token: string, url: string, body: S) {
-    return fetch(url, {
-        method: 'POST',
+
+const httpClient = axios.create({
+    baseURL: API_URL as string,
+    headers: {
+        'Accept': 'application/json',
+        'Content-Type': 'application/json'
+    }
+});
+
+
+export async function GetCoursesAsocciatedTeacher(token: string, idTeacher: string) {
+    return await httpClient.get<Schedule[]>(`schedules/${idTeacher}/list/`, {
         headers: {
-            'Accept': 'application/json',
-            'Content-Type': 'application/json',
             'Authorization': `Bearer ${token}`
-        },
-        body: JSON.stringify(body)
-    }).then(response => {
-        if (!response.ok) {
-            throw new Error(`Error HTTP: ${response.status} - ${response.statusText}`);
         }
-        return response.json();
-    }).then(data => data as T);
+    }).then(response => response.data);
 }
-
-
-
-

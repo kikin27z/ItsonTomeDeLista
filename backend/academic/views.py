@@ -33,6 +33,23 @@ def GetScheduleById(request, teacher_id):
     serializer = ScheduleShallowSerializer(schedules, many=True)
     return Response(serializer.data, status=status.HTTP_200_OK)
 
+@api_view(["GET"])
+def GetScheduleDetail(request,id):
+    if not id:
+        return Response(
+            {"message": "ID de la clase no proporcionado"},
+            status=status.HTTP_400_BAD_REQUEST,
+        )
+
+    try:
+        schedule = Schedule.objects.get(pk=id)
+        serializer = ScheduleShallowSerializer(schedule)
+        return Response(serializer.data, status=status.HTTP_200_OK)
+    except Schedule.DoesNotExist:
+        return Response(
+            {"error": "Materia inexistente"}, status=status.HTTP_404_NOT_FOUND
+        )
+
 
 @api_view(["GET"])
 def GetStudentsFromSchedule(request, schedule_id):

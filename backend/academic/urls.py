@@ -32,6 +32,11 @@ urlpatterns = [
         name="schedules-assigned-teacher",
     ),
     path(
+        "schedules/<str:id>/",
+        views.GetScheduleById,
+        name="schedule-in-detail",
+    ),
+    path(
         "enrollments/massive/",
         views.MassiveInsertionEnrollment,
         name="massive-insertion-enrollment",

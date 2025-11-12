@@ -1,60 +1,42 @@
+import axios from "axios";
 import { API_URL } from "../config/config";
 import type { LoginType, TokenType } from "../types/login.types";
 //Método que actualiza el access token usando el refresh token
-export async function refressAccessToken({ refreshToken }: { refreshToken: string }): Promise<string> {
-    const url = `${API_URL}token/refresh/`;
-    const body = {
-        access: refreshToken
-    };
-    const { access } = await fetch(url, {
-        method: 'POST',
-        headers: {
-            'Accept': 'application/json',
-            'Content-Type': 'application/json'
-        },
-        body: JSON.stringify(body)
-    }).then(response => {
-        if (!response.ok) {
-            throw new Error(`Refresh token experidado, haga login de nuevo`);
-        }
-        return response.json();
-    }).then(data => data as { access: string });
 
-    return access;
+const httpClient = axios.create({
+    baseURL: API_URL as string,
+    headers: {
+        'Accept': 'application/json',
+        'Content-Type': 'application/json'
+    }
+});
+
+export async function refressAccessToken({ refreshToken }: { refreshToken: string }) {
+    const body = { refresh: refreshToken };
+    try {
+        const response = await httpClient.post<{ access: string }>("token/refresh/", body);
+        return response.data.access;
+    } catch (error: any) {
+        throw new Error('Refresh token expirado, haga login de nuevo');
+    }
 }
 
 // Método que verifica que el access token sea válido
 export async function verifyAccessToken(token: string): Promise<boolean> {
-    const url = `${API_URL}token/verify/`;
-    return fetch(url, {
-        method: 'POST',
-        headers: {
-            'Accept': 'application/json',
-            'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({ token })
-    }).then(response => {
-        if (!response.ok) {
-            return false;
-        }
-        return true;
-    })
+    try {
+        const response = await httpClient.post("token/verify/", { token });
+        return response.status === 200;
+    } catch (error: any) {
+        throw new Error('Error al verificar la validez del token');
+    }
 }
 
 
 export async function createTokens(credentials: LoginType): Promise<TokenType> {
-    const url = `${API_URL}token/`;
-    return await fetch(url, {
-        method: 'POST',
-        headers: {
-            'Accept': 'application/json',
-            'Content-Type': 'application/json'
-        },
-        body: JSON.stringify(credentials)
-    }).then(response => {
-        if (!response.ok) {
-            throw new Error(`Error HTTP: ${response.status} - ${response.statusText}`);
-        }
-        return response.json();
-    }).then(data => data as TokenType);
+    try {
+        const response = await httpClient.post<TokenType>("token/", credentials);
+        return response.data;
+    } catch (error: any) {
+        throw new Error('Error al hacer login');
+    }
 }

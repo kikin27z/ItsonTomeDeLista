@@ -1,8 +1,25 @@
-import { Link, useNavigate } from 'react-router'
+import {  useNavigate } from 'react-router'
 import Box from '../components/dashboard/Box'
+import { useEffect, useState } from 'react';
+import type { Schedule } from '../types/academic.types';
+import { GetCoursesAsocciatedTeacher } from '../services/api';
+import { useAuth } from '../hooks/auth-data';
+import { convertTo12HourFormat } from '../utils/pipe-datetimes';
 
 const DashboardTeacher = () => {
+    const { user, token } = useAuth();
+    const [schedules, setSchedule] = useState<Schedule[]>([]);
     const navigate = useNavigate();
+
+
+    useEffect(() => {
+        const retrieveSchedules = async () => {
+            const data = await GetCoursesAsocciatedTeacher(token!, user!.username);
+            setSchedule(data);
+        }
+        retrieveSchedules();
+    }, []);
+
     return (
         <main className='dash-main-container'>
             <Box extraClasses='dash-presentation'>
@@ -24,55 +41,21 @@ const DashboardTeacher = () => {
                 <p className='dash-text-description'>Elige la clase para la cual deseas tomar asistencia</p>
             </Box>
             <section className='dash-grid-3c'>
-                    <Box extraClasses='dash-course-container'>
+
+                {schedules.map(s => (
+                    <Box key={s.id} extraClasses='dash-course-container'>
                         <article>
-                            <h3>Programacion I</h3>
-                            <p>ISW-305</p>
+                            <h3>{s.course.name}</h3>
+                            <p>{s.course.key_name}</p>
                         </article>
                         <article>
-                            <p>📅 Lunes - Miércoles 8:00 AM - 10:00 AM</p>
-                            <p>📍 Sala 201</p>
+                            <p>{`📅 ${s.days_of_week} ${convertTo12HourFormat(s.start_time)} - ${convertTo12HourFormat(s.end_time)}`}</p>
+                            <p>📍 {s.classroom}</p>
                             <p>👥 35 estudiantes</p>
                         </article>
-                        <button className='dash-btn dash-btn-style1' onClick={() => navigate("/dashboard/teacher/code-session/389948")}>Iniciar Toma Asistencia</button>
+                        <button className='dash-btn dash-btn-style1' onClick={() => navigate(`/dashboard/teacher/code-session/${s.id}`)}>Iniciar Toma Asistencia</button>
                     </Box>
-                    <Box extraClasses='dash-course-container'>
-                        <article>
-                            <h3>Programacion I</h3>
-                            <p>ISW-305</p>
-                        </article>
-                        <article>
-                            <p>📅 Lunes - Miércoles 8:00 AM - 10:00 AM</p>
-                            <p>📍 Sala 201</p>
-                            <p>👥 35 estudiantes</p>
-                        </article>
-                        <button className='dash-btn dash-btn-style1' onClick={() => navigate("/dashboard/teacher/code-session/389948")}>Iniciar Toma Asistencia</button>
-                    </Box>
-                    <Box extraClasses='dash-course-container'>
-                        <article>
-                            <h3>Programacion I</h3>
-                            <p>ISW-305</p>
-                        </article>
-                        <article>
-                            <p>📅 Lunes - Miércoles 8:00 AM - 10:00 AM</p>
-                            <p>📍 Sala 201</p>
-                            <p>👥 35 estudiantes</p>
-                        </article>
-                        <button className='dash-btn dash-btn-style1' onClick={() => navigate("/dashboard/teacher/code-session/389948")}>Iniciar Toma Asistencia</button>
-                    </Box>
-                    <Box extraClasses='dash-course-container'>
-                        <article>
-                            <h3>Programacion I</h3>
-                            <p>ISW-305</p>
-                        </article>
-                        <article>
-                            <p>📅 Lunes - Miércoles 8:00 AM - 10:00 AM</p>
-                            <p>📍 Sala 201</p>
-                            <p>👥 35 estudiantes</p>
-                        </article>
-                        <button className='dash-btn dash-btn-style1' onClick={() => navigate("/dashboard/teacher/code-session/389948")}>Iniciar Toma Asistencia</button>
-                    </Box>
-                
+                ))}
             </section>
         </main>
     )
