@@ -1,7 +1,11 @@
-const CodeBox = () => {
+type CodeBoxProps = {
+  code: string;
+};
+
+const CodeBox = ({code}: CodeBoxProps) => {
     return (
         <article className='dash-stats-code flex-column'>
-            <h2>ASIST-1-265677</h2>
+            <h2>{code}</h2>
             <p className='dash-text-description'>Código de asistencia</p>
         </article>
     )

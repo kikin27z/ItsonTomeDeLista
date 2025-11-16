@@ -59,7 +59,7 @@ class ClassSession(models.Model):
         )
 
     def  students_count(self):
-        return AttendanceRecord.objects.filter(class_sesion=self).count()
+        return AttendanceRecord.objects.filter(class_session=self).count()
 
 
 

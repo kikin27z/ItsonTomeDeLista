@@ -13,8 +13,31 @@ const httpClient = axios.create({
 
 
 export async function GetCoursesAsocciatedTeacher(token: string, idTeacher: string) {
-    console.log('Juan Cirerol')
     return await httpClient.get<Schedule[]>(`schedules/${idTeacher}/list/`, {
+        headers: {
+            'Authorization': `Bearer ${token}`
+        }
+    }).then(response => response.data);
+}
+
+export async function GetScheduleById(token: string, scheduleId: string) {
+    return await httpClient.get<any>(`schedules/${scheduleId}/`, {
+        headers: {
+            'Authorization': `Bearer ${token}`
+        }
+    }).then(response => response.data);
+}
+
+export async function CreateClassSession(token: string, scheduleId: string) {
+    return await httpClient.post<any>(`class-session/${scheduleId}/new`, {}, {
+        headers: {
+            'Authorization': `Bearer ${token}`
+        }
+    }).then(response => response.data);
+}
+
+export async function GetClassSessionToday(token: string, scheduleId: string) {
+    return await httpClient.get<any>(`class-session/${scheduleId}/today`, {
         headers: {
             'Authorization': `Bearer ${token}`
         }
