@@ -1,0 +1,31 @@
+version: '3.8'
+
+services:
+  db:
+    # Usa la imagen oficial de PostgreSQL
+    image: postgres:16-alpine
+    
+    # Mapea el puerto del contenedor (5432) al puerto de tu máquina (5432)
+    # Esto te permite conectar herramientas externas si es necesario
+    ports:
+      - "5432:5432"
+      
+    # Variables de entorno para configurar PostgreSQL
+    # Asegúrate de usar estas mismas variables en tu archivo settings.py de Django
+    environment:
+      POSTGRES_DB: asistencia # Nombre de la base de datos
+      POSTGRES_USER: admin   # Nombre de usuario
+      POSTGRES_PASSWORD: admin # Contraseña
+      
+    # Almacenamiento persistente de datos
+    # 'postgres_data' es un volumen que guardará los datos fuera del contenedor
+    # para que persistan aunque detengas o elimines el contenedor.
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+      
+    # Reiniciar siempre a menos que se detenga manualmente (útil en producción)
+    restart: unless-stopped
+
+# Definición de los volúmenes
+volumes:
+  postgres_data:

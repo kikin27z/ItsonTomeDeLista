@@ -35,8 +35,10 @@ export async function verifyAccessToken(token: string): Promise<boolean> {
 export async function createTokens(credentials: LoginType): Promise<TokenType> {
     try {
         const response = await httpClient.post<TokenType>("token/", credentials);
+        console.log('JUAN CIREROL')
         return response.data;
     } catch (error: any) {
-        throw new Error('Error al hacer login');
+        // Propaga el error para que el caller (login) lo capture y muestre mensaje adecuado
+        throw error;
     }
 }

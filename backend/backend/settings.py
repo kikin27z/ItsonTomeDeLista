@@ -29,7 +29,24 @@ SECRET_KEY = os.getenv("SECRET_KEY")
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 APPEND_SLASH = True  # <-- Agrega esta línea
-ALLOWED_HOSTS = os.getenv("ALLOWED_HOSTS", "localhost").split(",")
+from urllib.parse import urlparse
+
+_raw_allowed = os.getenv("ALLOWED_HOSTS", "localhost,127.0.0.1")
+_hosts = []
+for _part in _raw_allowed.split(","):
+    _part = _part.strip()
+    if not _part:
+        continue
+    if "://" in _part:
+        netloc = urlparse(_part).netloc
+    else:
+        netloc = _part
+    if netloc and ":" in netloc:
+        netloc = netloc.split(":")[0]
+    if netloc:
+        _hosts.append(netloc)
+
+ALLOWED_HOSTS = _hosts
 
 
 # Application definition

@@ -13,6 +13,7 @@ const httpClient = axios.create({
 
 
 export async function GetCoursesAsocciatedTeacher(token: string, idTeacher: string) {
+    console.log('Juan Cirerol')
     return await httpClient.get<Schedule[]>(`schedules/${idTeacher}/list/`, {
         headers: {
             'Authorization': `Bearer ${token}`

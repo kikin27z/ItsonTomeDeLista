@@ -3,9 +3,6 @@ import LoginInput from './LoginInput'
 import { useAuth } from '../../hooks/auth-data';
 import { useNavigate } from 'react-router';
 
-
-
-
 const LoginForm = () => {
     const navigate = useNavigate();
     const { login, user } = useAuth();
@@ -13,7 +10,7 @@ const LoginForm = () => {
     const [password, setPassword] = useState<string>("");
     const [errors, setErrors] = useState<{ idUser?: string, password?: string, wrongUser?: string }>({});
 
-    const handleForm = (e: FormEvent) => {
+    const handleForm = async (e: FormEvent) => {
         e.preventDefault();
         const newErrors: { idUser?: string, password?: string } = {};
 
@@ -31,11 +28,15 @@ const LoginForm = () => {
         }
 
         setErrors({});
-        login({
-            username: idUser,
-            password
-        });
-        navigate('/dashboard');
+        try {
+            await login({
+                username: idUser,
+                password
+            });
+            navigate('/dashboard');
+        } catch (err) {
+            setErrors({ wrongUser: 'Credenciales incorrectas' });
+        }
     };
 
     return (
@@ -44,6 +45,7 @@ const LoginForm = () => {
             <LoginInput placeholder='Ingresar ID ITSON de 11 dígitos' nameInput='password' setValue={setIdUser} valueInput={idUser} typeInput='text' />
             {errors.password && <span className="login-error">{errors.password}</span>}
             <LoginInput placeholder='Ingresar contraseña' nameInput='password' setValue={setPassword} valueInput={password} typeInput='password' />
+            {errors.wrongUser && <span className="login-error">{errors.wrongUser}</span>}
             <button type='submit'>Iniciar Sesión</button>
         </form>
     )
