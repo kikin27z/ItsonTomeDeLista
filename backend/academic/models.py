@@ -1,4 +1,9 @@
+from datetime import datetime
 from django.db import models
+
+from attendance.models import ClassSession
+from users.models import Profile
+from django.utils import timezone
 
 
 class Course(models.Model):
@@ -8,7 +13,7 @@ class Course(models.Model):
     key_name = models.CharField(max_length=7)
 
     def __str__(self):
-        return f"Clase: {self.name}"
+        return f"Clase: {self.name} "
 
 
 class Schedule(models.Model):
@@ -27,8 +32,27 @@ class Schedule(models.Model):
     start_date = models.DateField(null=False, blank=False)
 
     def __str__(self):
-        return f"{self.course} - Profesor: {self.teacher} Horario: {self.days_of_week} de {self.start_time} a {self.end_time} y salon {self.classroom}"
+        return f"Id: {self.id} - {self.course} - Profesor: {self.teacher} Horario: {self.days_of_week} de {self.start_time} a {self.end_time} y salon {self.classroom}"
 
+    def get_students(self):
+        return Profile.objects.filter(
+            course_enrolled__schedule=self
+        ).distinct()
+
+    def get_today_session(self):
+        now = timezone.now()
+        return ClassSession.objects.filter(actual_start_time__date=now, schedule=self).first()
+
+    def is_active_now(self):
+        now = datetime.now()
+        today = now.date()
+        now_time = now.time()
+
+        # Use <= and >= to include the start/end times
+        is_in_date_range = self.start_date <= today <= self.end_date
+        #is_in_time_range = self.start_time <= now_time <= self.end_time
+
+        return is_in_date_range #@ and is_in_time_range
 
 class Enrollment(models.Model):
     STATUS_CHOICES = [
@@ -42,8 +66,16 @@ class Enrollment(models.Model):
         null=True,
         related_name="course_enrolled",
     )
-    schedule = models.ForeignKey(Schedule, on_delete=models.SET_NULL, null=True)
+    schedule = models.ForeignKey(Schedule, on_delete=models.SET_NULL, null=True,related_name="enrollments")
     status = models.CharField(max_length=10, choices=STATUS_CHOICES, default="ACTIVE")
 
     def __str__(self):
         return f"Inscrito {self.student} a {self.schedule}"
+
+    @staticmethod
+    def is_student_enrolled_for_code(attendance_code, student_id):
+        return Enrollment.objects.filter(
+            schedule__classsession__attendance_code=attendance_code,
+            student_id=student_id,
+            status='ACTIVE'
+        ).exists()

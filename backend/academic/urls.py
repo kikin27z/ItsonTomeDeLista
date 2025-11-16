@@ -33,7 +33,7 @@ urlpatterns = [
     ),
     path(
         "schedules/<str:id>/",
-        views.GetScheduleById,
+        views.GetScheduleDetail,
         name="schedule-in-detail",
     ),
     path(

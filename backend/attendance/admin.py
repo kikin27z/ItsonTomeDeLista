@@ -4,3 +4,5 @@ from .models import *
 # @admin.register(ClassSession)
 # class ClassSessionAdmin(admin.ModelAdmin):
 #   filter_horizontal = ["relation"]
+admin.site.register(ClassSession)
+admin.site.register(AttendanceRecord)
