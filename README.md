@@ -22,6 +22,12 @@
 ## Instalación y Ejecución
 
 ### Frontend
+
+#### Crear archivo .env en front con el siguiente contenido
+#### VITE_API_URL=http://localhost:8000/api/
+#### VITE_LOCAL_STORAGE_ACCESS_TOKEN=access_token
+#### VITE_LOCAL_STORAGE_REFRESH_TOKEN=refresh_token
+
 ```bash
 cd frontend
 npm install
