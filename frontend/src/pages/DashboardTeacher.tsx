@@ -53,7 +53,7 @@ const DashboardTeacher = () => {
                             <p>📍 {s.classroom}</p>
                             <p>👥 35 estudiantes</p>
                         </article>
-                        <button className='dash-btn dash-btn-style1' onClick={() => navigate(`/dashboard/teacher/code-session/${s.id}`, { state: { schedule: s } })}>Ver detalles</button>
+                        <button className='dash-btn dash-btn-style1' onClick={() => navigate(`/dashboard/teacher/code-session/${s.id}`, { state: { schedule: s } })}>Asistencia</button>
                     </Box>
                 ))}
             </section>

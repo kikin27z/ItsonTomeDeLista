@@ -1,6 +1,6 @@
 import axios from "axios";
 import type { Schedule } from "../types/academic.types";
-import { API_URL } from "../config/config";
+import { API_URL, ACCESS_TOKEN } from "../config/config";
 
 
 const httpClient = axios.create({
@@ -42,4 +42,13 @@ export async function GetClassSessionToday(token: string, scheduleId: string) {
             'Authorization': `Bearer ${token}`
         }
     }).then(response => response.data);
+}
+
+export async function RegisterAttendance(token: string | null, studentId: string, attendanceCode: string) {
+    const body = { student_id: studentId, attendance_code: attendanceCode };
+    const headers: Record<string,string> = { 'Content-Type': 'application/json' };
+    // If token not provided, try to read it from localStorage (fallback)
+    const stored = token ?? (typeof localStorage !== 'undefined' ? localStorage.getItem(ACCESS_TOKEN) : null);
+    if (stored) headers['Authorization'] = `Bearer ${stored}`;
+    return await httpClient.post<any>(`class-session/register`, body, { headers }).then(response => response.data);
 }
