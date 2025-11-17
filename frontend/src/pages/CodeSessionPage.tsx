@@ -1,10 +1,11 @@
 import Box from '../components/dashboard/Box'
 import CodeBox from '../components/dashboard/CodeBox'
 import CodeSessionStats from '../components/dashboard/CodeSessionStats'
-import { useLocation, useParams } from 'react-router'
+import { useLocation, useParams, useNavigate } from 'react-router'
 import { useEffect, useState } from 'react'
 import type { Schedule } from '../types/academic.types'
 import { GetScheduleById, CreateClassSession, GetClassSessionToday } from '../services/api'
+import AttendanceList from '../components/dashboard/AttendanceList'
 import { useAuth } from '../hooks/auth-data'
 import { convertTo12HourFormat } from '../utils/pipe-datetimes'
 
@@ -12,9 +13,11 @@ const CodeSessionPage = () => {
     const { state } = useLocation()
     const params = useParams()
     const { token } = useAuth()
+    const navigate = useNavigate()
     const [schedule, setSchedule] = useState<Schedule | null>(state?.schedule ?? null)
     const [loading, setLoading] = useState<boolean>(!state?.schedule)
     const [attendanceCode, setAttendanceCode] = useState<string | null>(null)
+    const [session, setSession] = useState<any | null>(null)
 
     useEffect(() => {
         const load = async () => {
@@ -32,21 +35,21 @@ const CodeSessionPage = () => {
                 // First, try to get today's session if it exists
                 try {
                     const existing = await GetClassSessionToday(token!, String(currentSchedule!.id))
-                    if (existing && existing.attendance_code) {
-                        setAttendanceCode(existing.attendance_code)
+                    if (existing) {
+                        if (existing.attendance_code) setAttendanceCode(existing.attendance_code)
+                        setSession(existing)
                         return
                     }
                 } catch (getErr: any) {
-                    // If GET failed, we'll try to create. If GET failed because session exists
-                    // the backend might return 400 on create; we'll handle that below.
                     // Continue to creation attempt
                 }
 
                 // If no existing session, attempt to create one
                 try {
-                    const session = await CreateClassSession(token!, String(currentSchedule!.id))
-                    if (session && session.attendance_code) {
-                        setAttendanceCode(session.attendance_code)
+                    const sessionResp = await CreateClassSession(token!, String(currentSchedule!.id))
+                    if (sessionResp) {
+                        if (sessionResp.attendance_code) setAttendanceCode(sessionResp.attendance_code)
+                        setSession(sessionResp)
                         return
                     }
                 } catch (createErr: any) {
@@ -81,13 +84,16 @@ const CodeSessionPage = () => {
             <Box extraClasses='dash-stats-container'>
                 <article>
                     <h3>{schedule?.course?.name ?? 'Curso'}</h3>
-                    <p className='dash-text-description'>{schedule ? `${schedule.days_of_week} ${convertTo12HourFormat(schedule.start_time)} - ${convertTo12HourFormat(schedule.end_time)}` : ''}</p>
+                    <p className='dash-text-description'>{schedule ? `${schedule.days_of_week} ${convertTo12HourFormat(schedule.start_time)} - ${convertTo12HourFormat(schedule.end_time)}` : ''}, {schedule?.classroom} </p>
                     <CodeBox code={attendanceCode ?? "Generando..."}/>
                     <p className='dash-text-description txt-c'>Los alumnos pueden ingresar el número para registrar asistencia</p>
-                    <p>📍 {schedule?.classroom}</p>
+                    <div style={{ marginTop: 12 }}>
+                        <button className='dash-btn dash-btn-close-sesion' onClick={() => navigate('/dashboard/teacher/')}>Cerrar sesión de Asistencia</button>
+                    </div>
                 </article>
 
-                <CodeSessionStats/>
+                <CodeSessionStats attendances={session?.attendances ?? []} />
+                {session && <AttendanceList attendances={session.attendances ?? []} />}
             </Box>
         </main>
     )
