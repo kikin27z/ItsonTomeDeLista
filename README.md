@@ -43,4 +43,10 @@ py manage.py runserver
 ```
 ---
 
+### Base de datos
+
+#### Crea una base de datos posgrate y configura tu .env
+#### Ejecuta las prubas desde la carpeta pruebas 
+#### Ejecuta el script para poblar la base de datos con la asistencia de los alumnos
+
 _Viva One Piece._
