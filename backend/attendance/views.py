@@ -156,7 +156,7 @@ def GetSessionsHistory(request, schedule_id):
     
     sessions_data = []
     for session in sessions:
-        total = session.stu()
+        total = session.students_count()
         present = session.get_attendances("PRESENT").count()
         
         sessions_data.append({
@@ -171,6 +171,6 @@ def GetSessionsHistory(request, schedule_id):
     
     return Response({
         "schedule_id": schedule_id,
-        "class_name": f"{schedule.subject.name}",
+        "class_name":"{schedule.subject.name}",
         "sessions": sessions_data,
     }, status=status.HTTP_200_OK)
