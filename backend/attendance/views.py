@@ -1,12 +1,13 @@
 from datetime import datetime
-
 from django.shortcuts import get_object_or_404
 from rest_framework import status
-from rest_framework.decorators import api_view
+from rest_framework.decorators import api_view, permission_classes
+from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from academic.models import Schedule
-from .models import ClassSession,AttendanceRecord
+from .models import ClassSession, AttendanceRecord
 from .serializers import AttendanceRecordSerializer, ClassSessionDetailSerializer, RegisterAttendanceSerializer
+
 
 # Create your views here.
 
@@ -86,13 +87,90 @@ def RegisterAttendance(request):
 @api_view(["GET"])
 def GetAttendanceFromSession(request,session_id):
     class_session = get_object_or_404(ClassSession, id=session_id)
-
-    status_class = request.GET.get("status")
+    
+    # aquí valido que el usuario autenticado es el profesor de esta clase
+    if class_session.schedule.teacher != request.user.profile:
+        return Response(
+            {"error": "No tienes permiso para ver la asistencia de esta clase"},
+            status=status.HTTP_403_FORBIDDEN
+        )
+    
+    # Obtener filtro de estado (opcional)
+    status_filter = request.GET.get("status")
     valid_statuses = [choice[0] for choice in AttendanceRecord.STATUS_CHOICES]
-    if status_class in valid_statuses:
-        attendance = class_session.get_attendances(status_class)
+    
+    if status_filter and status_filter not in valid_statuses:
+        return Response(
+            {"error": f"Estado inválido. Opciones válidas: {valid_statuses}"},
+            status=status.HTTP_400_BAD_REQUEST
+        )
+    
+    # en esta parte obtengo los registros de asistencia
+    if status_filter:
+        attendance_records = class_session.get_attendances(status_filter)
     else:
-        attendance = class_session.get_attendances()
+        attendance_records = class_session.get_attendances()
+    
+    # aquí calculo las estadísticas
+    total_students = class_session.students_count()
+    present_count = class_session.get_attendances("PRESENT").count()
+    late_count = class_session.get_attendances("LATE").count()
+    justified_count = class_session.get_attendances("JUSTIFIED").count()
+    absent_count = class_session.get_attendances("ABSENT").count()
+    
+    serializer = AttendanceRecordSerializer(attendance_records, many=True)
+    
+    # esto es lo que devuelvo en la respuesta
+    return Response({
+        "session": {
+            "id": class_session.id,
+            "attendance_code": class_session.attendance_code,
+            "status": class_session.status,
+            "actual_start_time": class_session.actual_start_time,
+        },
+        "statistics": {
+            "total_students": total_students,
+            "present": present_count,
+            "late": late_count,
+            "justified": justified_count,
+            "absent": absent_count,
+        },
+        "attendance_list": serializer.data,
+    }, status=status.HTTP_200_OK)
 
-    serializer = AttendanceRecordSerializer(attendance, many=True)
-    return Response(serializer.data, status=status.HTTP_200_OK)
+# este metodo si es que se le puede llamar metodo es lo del historial de sesiones
+@api_view(["GET"])
+@permission_classes([IsAuthenticated])
+def GetSessionsHistory(request, schedule_id):
+    schedule = get_object_or_404(Schedule, id=schedule_id)
+    
+    # aquí valido que el usuario autenticado es el profesor
+    if schedule.teacher != request.user.profile:
+        return Response(
+            {"error": "No tienes permiso para ver el historial de esta clase"},
+            status=status.HTTP_403_FORBIDDEN
+        )
+    
+    # aquí obtengo todas las sesiones de la clase
+    sessions = ClassSession.objects.filter(schedule=schedule).order_by('-actual_start_time')
+    
+    sessions_data = []
+    for session in sessions:
+        total = session.stu()
+        present = session.get_attendances("PRESENT").count()
+        
+        sessions_data.append({
+            "id": session.id,
+            "date": session.actual_start_time,
+            "status": session.status,
+            "attendance_code": session.attendance_code,
+            "attendance_rate": f"{(present/total*100):.1f}%" if total > 0 else "0%",
+            "present_count": present,
+            "total_students": total,
+        })
+    
+    return Response({
+        "schedule_id": schedule_id,
+        "class_name": f"{schedule.subject.name}",
+        "sessions": sessions_data,
+    }, status=status.HTTP_200_OK)
