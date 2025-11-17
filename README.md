@@ -45,8 +45,11 @@ py manage.py runserver
 
 ### Base de datos
 
-#### Crea una base de datos posgrate y configura tu .env
-#### Ejecuta las prubas desde la carpeta pruebas 
-#### Ejecuta el script para poblar la base de datos con la asistencia de los alumnos
+#### 1.- Crea una base de datos posgrate y configura tu .env
+
+### Una vez corra el servidor y se creen las tablas en la base de datos:
+#### 1.- Ejecuta las prubas desde la carpeta pruebas 
+#### 2.- desde postman, abre el archivo asistencia itson y ejecuta la insercion de cursos y usuarios
+#### 3.- Ejecuta el script para poblar la base de datos con la asistencia de los alumnos
 
 _Viva One Piece._
