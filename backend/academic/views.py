@@ -1,9 +1,9 @@
 from rest_framework import viewsets, status
-from rest_framework.decorators import api_view
+from rest_framework_simplejwt.authentication import JWTAuthentication
+from rest_framework.permissions import IsAuthenticated, AllowAny
+from rest_framework.decorators import api_view, authentication_classes, permission_classes
 from django.db.models import Value
 from django.db.models.functions import Concat
-from .models import Course, Schedule
-from users.models import Profile
 from .serializers import *
 from rest_framework.response import Response
 from datetime import date
@@ -16,6 +16,8 @@ class CourseViewSet(viewsets.ModelViewSet):
 
 
 @api_view(["GET"])
+@authentication_classes([JWTAuthentication])
+@permission_classes([IsAuthenticated])
 def GetScheduleById(request, teacher_id):
     if not teacher_id or not re.fullmatch(r"^00000\d{6}$", teacher_id):
         return Response(
@@ -43,7 +45,7 @@ def GetScheduleDetail(request,id):
 
     try:
         schedule = Schedule.objects.get(pk=id)
-        serializer = ScheduleShallowSerializer(schedule)
+        serializer = ScheduleSerializer(schedule)
         return Response(serializer.data, status=status.HTTP_200_OK)
     except Schedule.DoesNotExist:
         return Response(
@@ -53,23 +55,35 @@ def GetScheduleDetail(request,id):
 
 @api_view(["GET"])
 def GetStudentsFromSchedule(request, schedule_id):
-    if not schedule_id:
+    try:
+        schedule_obj = Schedule.objects.get(pk=schedule_id)
+    except Schedule.DoesNotExist:
         return Response(
-            {"message": "ID de la clase no proporcionado"},
-            status=status.HTTP_400_BAD_REQUEST,
+            {"error": "Horario no encontrado"}, 
+            status=status.HTTP_404_NOT_FOUND
         )
-
-    students = (
-        Profile.objects.filter(course_enrolled__schedule_id=schedule_id)
-        .annotate(full_name=Concat("surname", Value(" "), "first_name"))
-        .order_by("full_name")
-    )
-    serializer = ProfileSerializer(students, many=True)
+    
+    students = Enrollment.objects.filter(
+        schedule=schedule_obj,
+        status="ACTIVE"
+    ).values_list("student", flat=True)
+    
+    students_profiles = Profile.objects.filter(pk__in=students).order_by("full_name")
+    serializer = ProfileSerializer(students_profiles, many=True)
+    
     return Response(serializer.data, status=status.HTTP_200_OK)
 
 
+
 @api_view(["POST"])
+@permission_classes([AllowAny])
 def MassiveInsertionCourse(request):
+    if Course.objects.exists():
+        return Response(
+            {"detail": "La inserción masiva de cursos ya se ha realizado anteriormente. No se pueden agregar más."},
+            status=status.HTTP_400_BAD_REQUEST
+        )
+
     serializer = CourseSerializer(data=request.data, many=True)
     if serializer.is_valid():
         serializer.save()
@@ -78,7 +92,15 @@ def MassiveInsertionCourse(request):
 
 
 @api_view(["POST"])
+@permission_classes([AllowAny])
 def MassiveInsertionSchedule(request):
+    if Schedule.objects.exists():
+        # 2. Si ya existen, retorna un error 400 (Bad Request)
+        return Response(
+            {"detail": "La inserción masiva de programas de cursos ya se ha realizado anteriormente. No se pueden agregar más."},
+            status=status.HTTP_400_BAD_REQUEST
+        )
+
     serializer = ScheduleSerializer(data=request.data, many=True)
     if serializer.is_valid():
         serializer.save()
@@ -87,6 +109,7 @@ def MassiveInsertionSchedule(request):
 
 
 @api_view(["POST"])
+@permission_classes([AllowAny])
 def MassiveInsertionEnrollment(request):
     schedule_id = request.data.get("schedule_id")
     print(schedule_id)

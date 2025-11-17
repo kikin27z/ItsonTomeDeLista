@@ -20,6 +20,16 @@ class CustomTokenObtainPairSerializer(TokenObtainPairSerializer):
         return token
 
 
+class ProfileShallowSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Profile
+        fields = [
+            "user_type",
+            "first_name",
+            "middle_name",
+            "surname",
+        ]
+
 class ProfileSerializer(serializers.ModelSerializer):
     class Meta:
         model = Profile

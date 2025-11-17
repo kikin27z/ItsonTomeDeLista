@@ -1,0 +1,200 @@
+{
+	"info": {
+		"_postman_id": "28c467a4-f9e0-484c-b4e1-c3fed8c6e805",
+		"name": "Asistencia Itson",
+		"schema": "https://schema.getpostman.com/json/collection/v2.0.0/collection.json",
+		"_exporter_id": "38467945"
+	},
+	"item": [
+		{
+			"name": "Insercion Masiva",
+			"item": [
+				{
+					"name": "Cursos",
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "[\r\n  {\r\n    \"name\": \"Fundamentos de Matemáticas\",\r\n    \"credits\": 9.37,\r\n    \"deparment\": \"Ingeniería de Software\",\r\n    \"key_name\": \"ISW-102\"\r\n  },\r\n  {\r\n    \"name\": \"Matemáticas Discretas\",\r\n    \"credits\": 9.37,\r\n    \"deparment\": \"Ingeniería de Software\",\r\n    \"key_name\": \"ISW-103\"\r\n  },\r\n  {\r\n    \"name\": \"Programación I con Laboratorio\",\r\n    \"credits\": 11.25,\r\n    \"deparment\": \"Ingeniería de Software\",\r\n    \"key_name\": \"ISW-104\"\r\n  },\r\n  {\r\n    \"name\": \"Ingeniería de Software\",\r\n    \"credits\": 5.62,\r\n    \"deparment\": \"Ingeniería de Software\",\r\n    \"key_name\": \"ISW-106\"\r\n  },\r\n  {\r\n    \"name\": \"Arquitectura de Computadoras\",\r\n    \"credits\": 5.62,\r\n    \"deparment\": \"Ingeniería de Software\",\r\n    \"key_name\": \"ISW-107\"\r\n  },\r\n  {\r\n    \"name\": \"Cálculo\",\r\n    \"credits\": 9.37,\r\n    \"deparment\": \"Ingeniería de Software\",\r\n    \"key_name\": \"ISW-202\"\r\n  },\r\n  {\r\n    \"name\": \"Matemáticas Computacionales\",\r\n    \"credits\": 9.37,\r\n    \"deparment\": \"Ingeniería de Software\",\r\n    \"key_name\": \"ISW-203\"\r\n  },\r\n  {\r\n    \"name\": \"Programación II con Laboratorio\",\r\n    \"credits\": 11.25,\r\n    \"deparment\": \"Ingeniería de Software\",\r\n    \"key_name\": \"ISW-204\"\r\n  },\r\n  {\r\n    \"name\": \"Fundamentos de Administración\",\r\n    \"credits\": 5.62,\r\n    \"deparment\": \"Ingeniería de Software\",\r\n    \"key_name\": \"ISW-205\"\r\n  },\r\n  {\r\n    \"name\": \"Sistemas Operativos\",\r\n    \"credits\": 5.62,\r\n    \"deparment\": \"Ingeniería de Software\",\r\n    \"key_name\": \"ISW-207\"\r\n  },\r\n  {\r\n    \"name\": \"Solución de Problemas\",\r\n    \"credits\": 5.62,\r\n    \"deparment\": \"Ingeniería de Software\",\r\n    \"key_name\": \"ISW-301\"\r\n  },\r\n  {\r\n    \"name\": \"Algebra Lineal\",\r\n    \"credits\": 5.62,\r\n    \"deparment\": \"Ingeniería de Software\",\r\n    \"key_name\": \"ISW-302\"\r\n  },\r\n  {\r\n    \"name\": \"Probabilidad y Estadística\",\r\n    \"credits\": 5.62,\r\n    \"deparment\": \"Ingeniería de Software\",\r\n    \"key_name\": \"ISW-303\"\r\n  },\r\n  {\r\n    \"name\": \"Programación III\",\r\n    \"credits\": 5.62,\r\n    \"deparment\": \"Ingeniería de Software\",\r\n    \"key_name\": \"ISW-304\"\r\n  },\r\n  {\r\n    \"name\": \"Bases de Datos\",\r\n    \"credits\": 5.62,\r\n    \"deparment\": \"Ingeniería de Software\",\r\n    \"key_name\": \"ISW-305\"\r\n  },\r\n  {\r\n    \"name\": \"Estructuras de Datos\",\r\n    \"credits\": 5.62,\r\n    \"deparment\": \"Ingeniería de Software\",\r\n    \"key_name\": \"ISW-306\"\r\n  },\r\n  {\r\n    \"name\": \"Redes\",\r\n    \"credits\": 5.62,\r\n    \"deparment\": \"Ingeniería de Software\",\r\n    \"key_name\": \"ISW-307\"\r\n  },\r\n  {\r\n    \"name\": \"Optativa de Formación General I\",\r\n    \"credits\": 5.62,\r\n    \"deparment\": \"Ingeniería de Software\",\r\n    \"key_name\": \"ISW-401\"\r\n  },\r\n  {\r\n    \"name\": \"Estadística Aplicada\",\r\n    \"credits\": 5.62,\r\n    \"deparment\": \"Ingeniería de Software\",\r\n    \"key_name\": \"ISW-402\"\r\n  },\r\n  {\r\n    \"name\": \"Seguridad Informática\",\r\n    \"credits\": 5.62,\r\n    \"deparment\": \"Ingeniería de Software\",\r\n    \"key_name\": \"ISW-403\"\r\n  },\r\n  {\r\n    \"name\": \"Bases de Datos Avanzadas\",\r\n    \"credits\": 5.62,\r\n    \"deparment\": \"Ingeniería de Software\",\r\n    \"key_name\": \"ISW-404\"\r\n  },\r\n  {\r\n    \"name\": \"Administración de Proyectos\",\r\n    \"credits\": 5.62,\r\n    \"deparment\": \"Ingeniería de Software\",\r\n    \"key_name\": \"ISW-405\"\r\n  },\r\n  {\r\n    \"name\": \"Modelado de Procesos\",\r\n    \"credits\": 5.62,\r\n    \"deparment\": \"Ingeniería de Software\",\r\n    \"key_name\": \"ISW-406\"\r\n  },\r\n  {\r\n    \"name\": \"Diseño de Software\",\r\n    \"credits\": 5.62,\r\n    \"deparment\": \"Ingeniería de Software\",\r\n    \"key_name\": \"ISW-407\"\r\n  },\r\n  {\r\n    \"name\": \"Optativa de Formación General II\",\r\n    \"credits\": 5.62,\r\n    \"deparment\": \"Ingeniería de Software\",\r\n    \"key_name\": \"ISW-501\"\r\n  },\r\n  {\r\n    \"name\": \"Métodos Numéricos Computacionales\",\r\n    \"credits\": 5.62,\r\n    \"deparment\": \"Ingeniería de Software\",\r\n    \"key_name\": \"ISW-502\"\r\n  },\r\n  {\r\n    \"name\": \"Pruebas de Software\",\r\n    \"credits\": 5.62,\r\n    \"deparment\": \"Ingeniería de Software\",\r\n    \"key_name\": \"ISW-503\"\r\n  },\r\n  {\r\n    \"name\": \"Aplicaciones Web\",\r\n    \"credits\": 5.62,\r\n    \"deparment\": \"Ingeniería de Software\",\r\n    \"key_name\": \"ISW-504\"\r\n  },\r\n  {\r\n    \"name\": \"Administración de Proyectos de Software\",\r\n    \"credits\": 5.62,\r\n    \"deparment\": \"Ingeniería de Software\",\r\n    \"key_name\": \"ISW-505\"\r\n  },\r\n  {\r\n    \"name\": \"Ingeniería de Requisitos\",\r\n    \"credits\": 5.62,\r\n    \"deparment\": \"Ingeniería de Software\",\r\n    \"key_name\": \"ISW-506\"\r\n  },\r\n  {\r\n    \"name\": \"Arquitectura de Software\",\r\n    \"credits\": 5.62,\r\n    \"deparment\": \"Ingeniería de Software\",\r\n    \"key_name\": \"ISW-507\"\r\n  },\r\n  {\r\n    \"name\": \"Innovación Tecnológica\",\r\n    \"credits\": 5.62,\r\n    \"deparment\": \"Ingeniería de Software\",\r\n    \"key_name\": \"ISW-601\"\r\n  },\r\n  {\r\n    \"name\": \"Sistemas Distribuidos\",\r\n    \"credits\": 5.62,\r\n    \"deparment\": \"Ingeniería de Software\",\r\n    \"key_name\": \"ISW-602\"\r\n  },\r\n  {\r\n    \"name\": \"Aplicaciones Móviles\",\r\n    \"credits\": 5.62,\r\n    \"deparment\": \"Ingeniería de Software\",\r\n    \"key_name\": \"ISW-603\"\r\n  },\r\n  {\r\n    \"name\": \"Sistemas Empotrados\",\r\n    \"credits\": 5.62,\r\n    \"deparment\": \"Ingeniería de Software\",\r\n    \"key_name\": \"ISW-604\"\r\n  },\r\n  {\r\n    \"name\": \"Proyecto de Software Integrador\",\r\n    \"credits\": 5.62,\r\n    \"deparment\": \"Ingeniería de Software\",\r\n    \"key_name\": \"ISW-605\"\r\n  },\r\n  {\r\n    \"name\": \"Diseño de Sistemas Interactivos\",\r\n    \"credits\": 5.62,\r\n    \"deparment\": \"Ingeniería de Software\",\r\n    \"key_name\": \"ISW-606\"\r\n  },\r\n  {\r\n    \"name\": \"Arquitecturas Empresariales\",\r\n    \"credits\": 5.62,\r\n    \"deparment\": \"Ingeniería de Software\",\r\n    \"key_name\": \"ISW-607\"\r\n  },\r\n  {\r\n    \"name\": \"Implementación de Prototipos\",\r\n    \"credits\": 5.62,\r\n    \"deparment\": \"Ingeniería de Software\",\r\n    \"key_name\": \"ISW-701\"\r\n  },\r\n  {\r\n    \"name\": \"Tópico de Formación General\",\r\n    \"credits\": 5.62,\r\n    \"deparment\": \"Ingeniería de Software\",\r\n    \"key_name\": \"ISW-702\"\r\n  },\r\n  {\r\n    \"name\": \"Calidad de Software\",\r\n    \"credits\": 5.62,\r\n    \"deparment\": \"Ingeniería de Software\",\r\n    \"key_name\": \"ISW-703\"\r\n  },\r\n  {\r\n    \"name\": \"Métodos Ágiles de Desarrollo\",\r\n    \"credits\": 5.62,\r\n    \"deparment\": \"Ingeniería de Software\",\r\n    \"key_name\": \"ISW-704\"\r\n  },\r\n  {\r\n    \"name\": \"Tópico I\",\r\n    \"credits\": 5.62,\r\n    \"deparment\": \"Ingeniería de Software\",\r\n    \"key_name\": \"ISW-705\"\r\n  },\r\n  {\r\n    \"name\": \"Tópico II\",\r\n    \"credits\": 5.62,\r\n    \"deparment\": \"Ingeniería de Software\",\r\n    \"key_name\": \"ISW-706\"\r\n  },\r\n  {\r\n    \"name\": \"Optativa de Acentuación\",\r\n    \"credits\": 5.62,\r\n    \"deparment\": \"Ingeniería de Software\",\r\n    \"key_name\": \"ISW-707\"\r\n  },\r\n  {\r\n    \"name\": \"Seminario de Titulación\",\r\n    \"credits\": 5.62,\r\n    \"deparment\": \"Ingeniería de Software\",\r\n    \"key_name\": \"ISW-801\"\r\n  },\r\n  {\r\n    \"name\": \"Práctica Profesional\",\r\n    \"credits\": 16.86,\r\n    \"deparment\": \"Ingeniería de Software\",\r\n    \"key_name\": \"ISW-802\"\r\n  },\r\n  {\r\n    \"name\": \"Evaluación de Software\",\r\n    \"credits\": 5.62,\r\n    \"deparment\": \"Ingeniería de Software\",\r\n    \"key_name\": \"ISW-803\"\r\n  },\r\n  {\r\n    \"name\": \"Tecnologías de Información para los Negocios\",\r\n    \"credits\": 5.62,\r\n    \"deparment\": \"Ingeniería de Software\",\r\n    \"key_name\": \"ISW-804\"\r\n  },\r\n  {\r\n    \"name\": \"Salud y Desarrollo Personal\",\r\n    \"credits\": 5.62,\r\n    \"deparment\": \"Licenciatura en Veterinaria\",\r\n    \"key_name\": \"MVZ-101\"\r\n  },\r\n  {\r\n    \"name\": \"Anatomía Veterinaria I\",\r\n    \"credits\": 18.75,\r\n    \"deparment\": \"Licenciatura en Veterinaria\",\r\n    \"key_name\": \"MVZ-102\"\r\n  },\r\n  {\r\n    \"name\": \"Bioquímica Veterinaria\",\r\n    \"credits\": 15.00,\r\n    \"deparment\": \"Licenciatura en Veterinaria\",\r\n    \"key_name\": \"MVZ-103\"\r\n  },\r\n  {\r\n    \"name\": \"Introducción a la Medicina Veterinaria\",\r\n    \"credits\": 3.75,\r\n    \"deparment\": \"Licenciatura en Veterinaria\",\r\n    \"key_name\": \"MVZ-104\"\r\n  },\r\n  {\r\n    \"name\": \"Ecología Veterinaria\",\r\n    \"credits\": 5.62,\r\n    \"deparment\": \"Licenciatura en Veterinaria\",\r\n    \"key_name\": \"MVZ-105\"\r\n  },\r\n  {\r\n    \"name\": \"Exterior y Manejo de los Animales\",\r\n    \"credits\": 5.62,\r\n    \"deparment\": \"Licenciatura en Veterinaria\",\r\n    \"key_name\": \"MVZ-106\"\r\n  },\r\n  {\r\n    \"name\": \"Análisis de la Información y Comunicación\",\r\n    \"credits\": 5.62,\r\n    \"deparment\": \"Licenciatura en Veterinaria\",\r\n    \"key_name\": \"MVZ-201\"\r\n  },\r\n  {\r\n    \"name\": \"Anatomía Veterinaria II\",\r\n    \"credits\": 13.12,\r\n    \"deparment\": \"Licenciatura en Veterinaria\",\r\n    \"key_name\": \"MVZ-202\"\r\n  },\r\n  {\r\n    \"name\": \"Biología Celular\",\r\n    \"credits\": 11.25,\r\n    \"deparment\": \"Licenciatura en Veterinaria\",\r\n    \"key_name\": \"MVZ-203\"\r\n  },\r\n  {\r\n    \"name\": \"Histología Veterinaria\",\r\n    \"credits\": 15.00,\r\n    \"deparment\": \"Licenciatura en Veterinaria\",\r\n    \"key_name\": \"MVZ-204\"\r\n  },\r\n  {\r\n    \"name\": \"Inmunología Veterinaria\",\r\n    \"credits\": 9.37,\r\n    \"deparment\": \"Licenciatura en Veterinaria\",\r\n    \"key_name\": \"MVZ-205\"\r\n  },\r\n  {\r\n    \"name\": \"Etología Veterinaria\",\r\n    \"credits\": 5.62,\r\n    \"deparment\": \"Licenciatura en Veterinaria\",\r\n    \"key_name\": \"MVZ-206\"\r\n  },\r\n  {\r\n    \"name\": \"Democracia y Gestión Ciudadana\",\r\n    \"credits\": 5.62,\r\n    \"deparment\": \"Licenciatura en Veterinaria\",\r\n    \"key_name\": \"MVZ-301\"\r\n  },\r\n  {\r\n    \"name\": \"Parasitología Veterinaria\",\r\n    \"credits\": 13.12,\r\n    \"deparment\": \"Licenciatura en Veterinaria\",\r\n    \"key_name\": \"MVZ-302\"\r\n  },\r\n  {\r\n    \"name\": \"Fisiología Veterinaria\",\r\n    \"credits\": 15.00,\r\n    \"deparment\": \"Licenciatura en Veterinaria\",\r\n    \"key_name\": \"MVZ-303\"\r\n  },\r\n  {\r\n    \"name\": \"Virología Veterinaria\",\r\n    \"credits\": 9.37,\r\n    \"deparment\": \"Licenciatura en Veterinaria\",\r\n    \"key_name\": \"MVZ-304\"\r\n  },\r\n  {\r\n    \"name\": \"Bacteriología y Micología Veterinaria\",\r\n    \"credits\": 13.12,\r\n    \"deparment\": \"Licenciatura en Veterinaria\",\r\n    \"key_name\": \"MVZ-305\"\r\n  },\r\n  {\r\n    \"name\": \"Optativa de Formación General I\",\r\n    \"credits\": 5.62,\r\n    \"deparment\": \"Licenciatura en Veterinaria\",\r\n    \"key_name\": \"MVZ-401\"\r\n  },\r\n  {\r\n    \"name\": \"Farmacología Veterinaria\",\r\n    \"credits\": 15.00,\r\n    \"deparment\": \"Licenciatura en Veterinaria\",\r\n    \"key_name\": \"MVZ-402\"\r\n  },\r\n  {\r\n    \"name\": \"Patología General\",\r\n    \"credits\": 16.87,\r\n    \"deparment\": \"Licenciatura en Veterinaria\",\r\n    \"key_name\": \"MVZ-403\"\r\n  },\r\n  {\r\n    \"name\": \"Fisiología de la Reproducción\",\r\n    \"credits\": 11.25,\r\n    \"deparment\": \"Licenciatura en Veterinaria\",\r\n    \"key_name\": \"MVZ-404\"\r\n  },\r\n  {\r\n    \"name\": \"Propedéutica Veterinaria\",\r\n    \"credits\": 9.37,\r\n    \"deparment\": \"Licenciatura en Veterinaria\",\r\n    \"key_name\": \"MVZ-405\"\r\n  },\r\n  {\r\n    \"name\": \"Inglés Universitario B1 I\",\r\n    \"credits\": 9.37,\r\n    \"deparment\": \"Tronco Comun\",\r\n    \"key_name\": \"MVZ-407\"\r\n  },\r\n  {\r\n    \"name\": \"Optativa de Formación General II\",\r\n    \"credits\": 5.62,\r\n    \"deparment\": \"Licenciatura en Veterinaria\",\r\n    \"key_name\": \"MVZ-501\"\r\n  },\r\n  {\r\n    \"name\": \"Patología Clínica\",\r\n    \"credits\": 9.37,\r\n    \"deparment\": \"Licenciatura en Veterinaria\",\r\n    \"key_name\": \"MVZ-502\"\r\n  },\r\n  {\r\n    \"name\": \"Patología Sistémica\",\r\n    \"credits\": 13.12,\r\n    \"deparment\": \"Licenciatura en Veterinaria\",\r\n    \"key_name\": \"MVZ-503\"\r\n  },\r\n  {\r\n    \"name\": \"Nutrición Animal Básica\",\r\n    \"credits\": 11.25,\r\n    \"deparment\": \"Licenciatura en Veterinaria\",\r\n    \"key_name\": \"MVZ-504\"\r\n  },\r\n  {\r\n    \"name\": \"Inocuidad de Productos de Origen Animal\",\r\n    \"credits\": 9.37,\r\n    \"deparment\": \"Licenciatura en Veterinaria\",\r\n    \"key_name\": \"MVZ-505\"\r\n  },\r\n  {\r\n    \"name\": \"Inglés Universitario B1 II\",\r\n    \"credits\": 9.37,\r\n    \"deparment\": \"Tronco Comun\",\r\n    \"key_name\": \"MVZ-506\"\r\n  },\r\n  {\r\n    \"name\": \"Creatividad e Innovación\",\r\n    \"credits\": 5.62,\r\n    \"deparment\": \"Licenciatura en Veterinaria\",\r\n    \"key_name\": \"MVZ-601\"\r\n  },\r\n  {\r\n    \"name\": \"Mejoramiento Genético Animal\",\r\n    \"credits\": 11.25,\r\n    \"deparment\": \"Licenciatura en Veterinaria\",\r\n    \"key_name\": \"MVZ-602\"\r\n  },\r\n  {\r\n    \"name\": \"Educación Quirúrgica\",\r\n    \"credits\": 11.25,\r\n    \"deparment\": \"Licenciatura en Veterinaria\",\r\n    \"key_name\": \"MVZ-603\"\r\n  },\r\n  {\r\n    \"name\": \"Reproducción Aplicada\",\r\n    \"credits\": 11.25,\r\n    \"deparment\": \"Licenciatura en Veterinaria\",\r\n    \"key_name\": \"MVZ-604\"\r\n  },\r\n  {\r\n    \"name\": \"Nutrición Animal Aplicada\",\r\n    \"credits\": 11.25,\r\n    \"deparment\": \"Licenciatura en Veterinaria\",\r\n    \"key_name\": \"MVZ-605\"\r\n  },\r\n  {\r\n    \"name\": \"Epidemiología Veterinaria\",\r\n    \"credits\": 7.50,\r\n    \"deparment\": \"Licenciatura en Veterinaria\",\r\n    \"key_name\": \"MVZ-606\"\r\n  },\r\n  {\r\n    \"name\": \"Optativa I\",\r\n    \"credits\": 5.62,\r\n    \"deparment\": \"Licenciatura en Veterinaria\",\r\n    \"key_name\": \"MVZ-701\"\r\n  },\r\n  {\r\n    \"name\": \"Legislación y Bioética Veterinaria\",\r\n    \"credits\": 5.62,\r\n    \"deparment\": \"Licenciatura en Veterinaria\",\r\n    \"key_name\": \"MVZ-702\"\r\n  },\r\n  {\r\n    \"name\": \"Terapéutica Quirúrgica\",\r\n    \"credits\": 11.25,\r\n    \"deparment\": \"Licenciatura en Veterinaria\",\r\n    \"key_name\": \"MVZ-703\"\r\n  },\r\n  {\r\n    \"name\": \"Producción de Bovinos Leche\",\r\n    \"credits\": 11.25,\r\n    \"deparment\": \"Licenciatura en Veterinaria\",\r\n    \"key_name\": \"MVZ-704\"\r\n  },\r\n  {\r\n    \"name\": \"Producción de Bovinos Carne\",\r\n    \"credits\": 11.25,\r\n    \"deparment\": \"Licenciatura en Veterinaria\",\r\n    \"key_name\": \"MVZ-705\"\r\n  },\r\n  {\r\n    \"name\": \"Medicina Preventiva y Salud Pública\",\r\n    \"credits\": 7.50,\r\n    \"deparment\": \"Licenciatura en Veterinaria\",\r\n    \"key_name\": \"MVZ-706\"\r\n  },\r\n  {\r\n    \"name\": \"Administración Empresarial Sustentable\",\r\n    \"credits\": 5.62,\r\n    \"deparment\": \"Licenciatura en Veterinaria\",\r\n    \"key_name\": \"MVZ-707\"\r\n  },\r\n  {\r\n    \"name\": \"Optativa II\",\r\n    \"credits\": 5.62,\r\n    \"deparment\": \"Licenciatura en Veterinaria\",\r\n    \"key_name\": \"MVZ-801\"\r\n  },\r\n  {\r\n    \"name\": \"Acuacultura\",\r\n    \"credits\": 5.62,\r\n    \"deparment\": \"Licenciatura en Veterinaria\",\r\n    \"key_name\": \"MVZ-802\"\r\n  },\r\n  {\r\n    \"name\": \"Producción Porcina\",\r\n    \"credits\": 11.25,\r\n    \"deparment\": \"Licenciatura en Veterinaria\",\r\n    \"key_name\": \"MVZ-803\"\r\n  },\r\n  {\r\n    \"name\": \"Producción de Pequeños Rumiantes\",\r\n    \"credits\": 13.12,\r\n    \"deparment\": \"Licenciatura en Veterinaria\",\r\n    \"key_name\": \"MVZ-804\"\r\n  },\r\n  {\r\n    \"name\": \"Producción de Aves\",\r\n    \"credits\": 13.12,\r\n    \"deparment\": \"Licenciatura en Veterinaria\",\r\n    \"key_name\": \"MVZ-805\"\r\n  },\r\n  {\r\n    \"name\": \"Bioestadística (Inglés)\",\r\n    \"credits\": 5.62,\r\n    \"deparment\": \"Tronco Comun\",\r\n    \"key_name\": \"MVZ-806\"\r\n  },\r\n  {\r\n    \"name\": \"Plan de Negocios\",\r\n    \"credits\": 5.62,\r\n    \"deparment\": \"Licenciatura en Veterinaria\",\r\n    \"key_name\": \"MVZ-807\"\r\n  },\r\n  {\r\n    \"name\": \"Optativa III\",\r\n    \"credits\": 5.62,\r\n    \"deparment\": \"Licenciatura en Veterinaria\",\r\n    \"key_name\": \"MVZ-901\"\r\n  },\r\n  {\r\n    \"name\": \"Clínica de Aves\",\r\n    \"credits\": 5.62,\r\n    \"deparment\": \"Licenciatura en Veterinaria\",\r\n    \"key_name\": \"MVZ-902\"\r\n  },\r\n  {\r\n    \"name\": \"Clínica de Porcinos\",\r\n    \"credits\": 5.62,\r\n    \"deparment\": \"Licenciatura en Veterinaria\",\r\n    \"key_name\": \"MVZ-903\"\r\n  },\r\n  {\r\n    \"name\": \"Clínica de Rumiantes\",\r\n    \"credits\": 5.62,\r\n    \"deparment\": \"Licenciatura en Veterinaria\",\r\n    \"key_name\": \"MVZ-904\"\r\n  },\r\n  {\r\n    \"name\": \"Clínica de Perros y Gatos\",\r\n    \"credits\": 9.37,\r\n    \"deparment\": \"Licenciatura en Veterinaria\",\r\n    \"key_name\": \"MVZ-905\"\r\n  },\r\n  {\r\n    \"name\": \"Clínica de Equinos\",\r\n    \"credits\": 5.62,\r\n    \"deparment\": \"Licenciatura en Veterinaria\",\r\n    \"key_name\": \"MVZ-906\"\r\n  },\r\n  {\r\n    \"name\": \"Proyectos de Inversión\",\r\n    \"credits\": 5.62,\r\n    \"deparment\": \"Licenciatura en Veterinaria\",\r\n    \"key_name\": \"MVZ-907\"\r\n  },\r\n  {\r\n    \"name\": \"Tutoría I\",\r\n    \"credits\": 1.00,\r\n    \"deparment\": \"Tronco Comun\",\r\n    \"key_name\": \"MVZ-001\"\r\n  },\r\n  {\r\n    \"name\": \"Tutoría II\",\r\n    \"credits\": 1.00,\r\n    \"deparment\": \"Tronco Comun\",\r\n    \"key_name\": \"MVZ-002\"\r\n  },\r\n  {\r\n    \"name\": \"Inglés Universitario A1\",\r\n    \"credits\": 9.37,\r\n    \"deparment\": \"Tronco Comun\",\r\n    \"key_name\": \"MVZ-003\"\r\n  },\r\n  {\r\n    \"name\": \"Inglés Universitario A2\",\r\n    \"credits\": 9.37,\r\n    \"deparment\": \"Tronco Comun\",\r\n    \"key_name\": \"MVZ-004\"\r\n  },\r\n  {\r\n    \"name\": \"Metrología\",\r\n    \"credits\": 5.62,\r\n    \"deparment\": \"Ingeniería Industrial y de Sistemas\",\r\n    \"key_name\": \"IIS-102\"\r\n  },\r\n  {\r\n    \"name\": \"Introducción a la Ing. Industrial y de Sistemas\",\r\n    \"credits\": 5.62,\r\n    \"deparment\": \"Ingeniería Industrial y de Sistemas\",\r\n    \"key_name\": \"IIS-103\"\r\n  },\r\n  {\r\n    \"name\": \"Modelación de Sistemas Organizacionales\",\r\n    \"credits\": 5.62,\r\n    \"deparment\": \"Ingeniería Industrial y de Sistemas\",\r\n    \"key_name\": \"IIS-104\"\r\n  },\r\n  {\r\n    \"name\": \"Ingeniería de Materiales c/lab\",\r\n    \"credits\": 9.37,\r\n    \"deparment\": \"Ingeniería Industrial y de Sistemas\",\r\n    \"key_name\": \"IIS-202\"\r\n  },\r\n  {\r\n    \"name\": \"Gestión Integral de la Calidad\",\r\n    \"credits\": 5.62,\r\n    \"deparment\": \"Ingeniería Industrial y de Sistemas\",\r\n    \"key_name\": \"IIS-301\"\r\n  },\r\n  {\r\n    \"name\": \"Seguridad, Salud y Medio Ambiente\",\r\n    \"credits\": 5.62,\r\n    \"deparment\": \"Ingeniería Industrial y de Sistemas\",\r\n    \"key_name\": \"IIS-302\"\r\n  },\r\n  {\r\n    \"name\": \"Aseguramiento y Control de la Calidad\",\r\n    \"credits\": 5.62,\r\n    \"deparment\": \"Ingeniería Industrial y de Sistemas\",\r\n    \"key_name\": \"IIS-402\"\r\n  },\r\n  {\r\n    \"name\": \"Administración de Operaciones I\",\r\n    \"credits\": 5.62,\r\n    \"deparment\": \"Ingeniería Industrial y de Sistemas\",\r\n    \"key_name\": \"IIS-403\"\r\n  },\r\n  {\r\n    \"name\": \"Ingeniería de Métodos\",\r\n    \"credits\": 5.62,\r\n    \"deparment\": \"Ingeniería Industrial y de Sistemas\",\r\n    \"key_name\": \"IIS-404\"\r\n  },\r\n  {\r\n    \"name\": \"Procesos de Manufactura c/lab\",\r\n    \"credits\": 9.37,\r\n    \"deparment\": \"Ingeniería Industrial y de Sistemas\",\r\n    \"key_name\": \"IIS-502\"\r\n  },\r\n  {\r\n    \"name\": \"Administración de Operaciones II\",\r\n    \"credits\": 5.62,\r\n    \"deparment\": \"Ingeniería Industrial y de Sistemas\",\r\n    \"key_name\": \"IIS-503\"\r\n  },\r\n  {\r\n    \"name\": \"Medición del Trabajo c/lab\",\r\n    \"credits\": 9.37,\r\n    \"deparment\": \"Ingeniería Industrial y de Sistemas\",\r\n    \"key_name\": \"IIS-504\"\r\n  },\r\n  {\r\n    \"name\": \"Planeación y estrategia organizacional\",\r\n    \"credits\": 5.62,\r\n    \"deparment\": \"Ingeniería Industrial y de Sistemas\",\r\n    \"key_name\": \"IIS-505\"\r\n  },\r\n  {\r\n    \"name\": \"Diseño Asistido por Computadora\",\r\n    \"credits\": 5.62,\r\n    \"deparment\": \"Ingeniería Industrial y de Sistemas\",\r\n    \"key_name\": \"IIS-602\"\r\n  },\r\n  {\r\n    \"name\": \"Gestión del Abastecimiento\",\r\n    \"credits\": 5.62,\r\n    \"deparment\": \"Ingeniería Industrial y de Sistemas\",\r\n    \"key_name\": \"IIS-603\"\r\n  },\r\n  {\r\n    \"name\": \"Ergonomía c/lab\",\r\n    \"credits\": 9.37,\r\n    \"deparment\": \"Ingeniería Industrial y de Sistemas\",\r\n    \"key_name\": \"IIS-604\"\r\n  },\r\n  {\r\n    \"name\": \"Instalaciones Industriales\",\r\n    \"credits\": 5.62,\r\n    \"deparment\": \"Ingeniería Industrial y de Sistemas\",\r\n    \"key_name\": \"IIS-701\"\r\n  },\r\n  {\r\n    \"name\": \"Planeación y Diseño de Instalaciones\",\r\n    \"credits\": 5.62,\r\n    \"deparment\": \"Ingeniería Industrial y de Sistemas\",\r\n    \"key_name\": \"IIS-702\"\r\n  },\r\n  {\r\n    \"name\": \"Sistemas de Distribución\",\r\n    \"credits\": 5.62,\r\n    \"deparment\": \"Ingeniería Industrial y de Sistemas\",\r\n    \"key_name\": \"IIS-703\"\r\n  },\r\n  {\r\n    \"name\": \"Planeación Avanzada de la Calidad\",\r\n    \"credits\": 5.62,\r\n    \"deparment\": \"Ingeniería Industrial y de Sistemas\",\r\n    \"key_name\": \"IIS-704\"\r\n  },\r\n  {\r\n    \"name\": \"Mejores Prácticas de Manufactura\",\r\n    \"credits\": 5.62,\r\n    \"deparment\": \"Ingeniería Industrial y de Sistemas\",\r\n    \"key_name\": \"IIS-707\"\r\n  },\r\n  {\r\n    \"name\": \"Mantenimiento de los Sistemas Productivos\",\r\n    \"credits\": 5.62,\r\n    \"deparment\": \"Ingeniería Industrial y de Sistemas\",\r\n    \"key_name\": \"IIS-801\"\r\n  },\r\n  {\r\n    \"name\": \"Ingeniería Avanzada de la Calidad\",\r\n    \"credits\": 5.62,\r\n    \"deparment\": \"Ingeniería Industrial y de Sistemas\",\r\n    \"key_name\": \"IIS-802\"\r\n  }\r\n]",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": "http://127.0.0.1:8000/api/academic/courses/massive/"
+					},
+					"response": []
+				},
+				{
+					"name": "Usuarios",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "[\r\n      {\r\n    \"username\": \"00000999911\",\r\n    \"email\": \"gibrancini@bananini.com\",\r\n    \"password\": \"mipotroseguro321\",\r\n    \"profile\": {\r\n      \"user_type\": \"TEACHER\",\r\n      \"first_name\": \"Christian\",\r\n      \"middle_name\": \"Gibrán\",\r\n      \"surname\": \"Duran Solano\",\r\n      \"unique_id\": \"00000999911\",\r\n      \"department\": \"Ingeniería en Software\"\r\n    }\r\n  },\r\n   {\r\n    \"username\": \"00000002743\",\r\n    \"email\": \"gborrego@itson.edu.mx\",\r\n    \"password\": \"mipassword123\",\r\n    \"profile\": {\r\n      \"user_type\": \"TEACHER\",\r\n      \"first_name\": \"Gilberto\",\r\n      \"surname\": \"Borrego Soto\",\r\n      \"unique_id\": \"00000002743\",\r\n      \"department\": \"Ingeniería en Software\"\r\n    }\r\n  },\r\n  {\r\n    \"username\": \"00000245138\",\r\n    \"email\": \"jose.franco245138@potros.itson.mx\",\r\n    \"password\": \"luffy274\",\r\n    \"profile\": {\r\n      \"user_type\": \"STUDENT\",\r\n      \"first_name\": \"Jose\",\r\n      \"middle_name\": \"Karim\",\r\n      \"surname\": \"Franco Valencia\",\r\n      \"unique_id\": \"00000245138\",\r\n      \"major\": \"Ingeniería en Software\"\r\n    }\r\n  },\r\n  {\r\n    \"username\": \"00000247164\",\r\n    \"email\": \"hisamycota@gmail.com\",\r\n    \"password\": \"mipussypeluda123\",\r\n    \"profile\": {\r\n      \"user_type\": \"STUDENT\",\r\n      \"first_name\": \"Hisamy\",\r\n      \"surname\": \"5\",\r\n      \"unique_id\": \"00000247164\",\r\n      \"major\": \"Ingeniería en Software\"\r\n    }\r\n  },\r\n  {\r\n    \"username\": \"00000244821\",\r\n    \"email\": \"victor.encinas244821@potros.itson.edu.mx\",\r\n    \"password\": \"aymama123\",\r\n    \"profile\": {\r\n      \"user_type\": \"STUDENT\",\r\n      \"first_name\": \"Víctor\",\r\n      \"middle_name\": \"Humberto\",\r\n      \"surname\": \"Encinas Guzmán\",\r\n      \"unique_id\": \"00000244821\",\r\n      \"major\": \"Ingeniería en Software\"\r\n    }\r\n  },\r\n \r\n  {\r\n    \"username\": \"00000247336\",\r\n    \"email\": \"jesus.gonzalez247336@potros.itson.edu.mx\",\r\n    \"password\": \"tussimiami\",\r\n    \"profile\": {\r\n      \"user_type\": \"STUDENT\",\r\n      \"first_name\": \"Jesús \",\r\n      \"middle_name\": \"Rene\",\r\n      \"surname\": \"González Castro\",\r\n      \"unique_id\": \"00000247336\",\r\n      \"major\": \"Ingeniería en Software\"\r\n    }\r\n  },\r\n  {\r\n    \"username\": \"00000247398\",\r\n    \"email\": \"ricardo.gutierrez247398@potros.itson.edu.mx\",\r\n    \"password\": \"mipassword123\",\r\n    \"profile\": {\r\n      \"user_type\": \"STUDENT\",\r\n      \"first_name\": \"Ricardo\",\r\n      \"middle_name\": \"Alán\",\r\n      \"surname\": \"Gutiérrez Garcés\",\r\n      \"unique_id\": \"00000247398\",\r\n      \"major\": \"Ingeniería en Software\"\r\n    }\r\n  },\r\n  {\r\n    \"username\": \"00000247383\",\r\n    \"email\": \"clark.carlos247383@potros.itson.edu.mx\",\r\n    \"password\": \"SoyLoleroyQue77\",\r\n    \"profile\": {\r\n      \"user_type\": \"STUDENT\",\r\n      \"first_name\": \"Carlos\",\r\n      \"middle_name\": \"Clark\",\r\n      \"surname\": \"Clarkin\",\r\n      \"unique_id\": \"00000247383\",\r\n      \"major\": \"Ingeniería en Software\"\r\n    }\r\n  },\r\n  {\r\n    \"username\": \"00000247571\",\r\n    \"email\": \"hector.espinoza247571@potros.itson.edu.mx\",\r\n    \"password\": \"el novaaaak\",\r\n    \"profile\": {\r\n      \"user_type\": \"STUDENT\",\r\n      \"first_name\": \"Hector\",\r\n      \"middle_name\": \"Alberto\",\r\n      \"surname\": \"Espinoza Duarte\",\r\n      \"unique_id\": \"00000247571\",\r\n      \"major\": \"Ingeniería en Software\"\r\n    }\r\n  },\r\n  {\r\n    \"username\": \"00000246904\",\r\n    \"email\": \"franciscovg943@gmail.com\",\r\n    \"password\": \"fuckCejasCurveadas\",\r\n    \"profile\": {\r\n      \"user_type\": \"STUDENT\",\r\n      \"first_name\": \"Francisco\",\r\n      \"middle_name\": \" \",\r\n      \"surname\": \"Valdez Gastelum\",\r\n      \"unique_id\": \"00000246904\",\r\n      \"major\": \"Ingeniería en Software\"\r\n    }\r\n  },\r\n  {\r\n    \"username\": \"00000245641\",\r\n    \"email\": \"roberto@example.com\",\r\n    \"password\": \"mipassword123\",\r\n    \"profile\": {\r\n      \"user_type\": \"STUDENT\",\r\n      \"first_name\": \"Roberto\",\r\n      \"middle_name\": \"Carlos\",\r\n      \"surname\": \"Antillón Morales\",\r\n      \"unique_id\": \"00000245641\",\r\n      \"major\": \"Ingeniería en electrónica \"\r\n    }\r\n  },\r\n  {\r\n    \"username\": \"00000246966\",\r\n    \"email\": \"enrique.rodriguez@potros.itson.edu.mx\",\r\n    \"password\": \"karimmimejoramigo\",\r\n    \"profile\": {\r\n        \"user_type\": \"STUDENT\",\r\n        \"first_name\": \"Enrique\",\r\n        \"surname\": \"Rodriguez Angulo\",\r\n        \"unique_id\": \"0000024699\",\r\n        \"major\": \"Ingeniería en Software\"\r\n    }\r\n},\r\n{\r\n    \"username\": \"00000245244\",\r\n    \"email\": \"eduardo.talavera245244@potros.itson.edu.mx\",\r\n    \"password\": \"hiramhomo123\",\r\n    \"profile\": {\r\n        \"user_type\": \"STUDENT\",\r\n        \"first_name\": \"Eduardo\",\r\n        \"surname\": \"Talavera Ramos\",\r\n        \"unique_id\": \"00000245244\",\r\n        \"major\": \"Bachelor in Software Engineering\"\r\n    }\r\n}\r\n]",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": "http://127.0.0.1:8000/api/users/massive/"
+					},
+					"response": []
+				},
+				{
+					"name": "Inscripciones",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"schedule_id\": 1\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": "http://127.0.0.1:8000/api/enrollments/massive/"
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Auth",
+			"item": [
+				{
+					"name": "Login",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\"username\": \"00000245138\", \"password\": \"luffy274\"}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": "http://127.0.0.1:8000/api/token/"
+					},
+					"response": []
+				},
+				{
+					"name": "Refresh Access Token",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"refresh\": \"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoicmVmcmVzaCIsImV4cCI6MTc2MjczMTAwNCwiaWF0IjoxNzYyNjQ0NjA0LCJqdGkiOiI2NjgyZjUxYTA2OWY0M2VmODU4MzlmZDMzMDA1NTVlYyIsInVzZXJfaWQiOiIzIiwidXNlcm5hbWUiOiIwMDAwMDI0NTEzOCIsImVtYWlsIjoiam9zZS5mcmFuY28yNDUxMzhAcG90cm9zLml0c29uLm14IiwidXNlclR5cGUiOiJTVFVERU5UIiwibmFtZSI6Ikpvc2UgS2FyaW0gRnJhbmNvIFZhbGVuY2lhIn0.1bQ-mvtI6dhEk52igDw4O2UNXgJMEZnUo243UVzzoE\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": "http://127.0.0.1:8000/api/token/refresh/"
+					},
+					"response": []
+				},
+				{
+					"name": "Verify",
+					"request": {
+						"method": "GET",
+						"header": []
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Cursos",
+			"item": [
+				{
+					"name": "Consultar Cursos",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": "http://127.0.0.1:8000/api/courses"
+					},
+					"response": []
+				},
+				{
+					"name": "Obtener Alumnado",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": "http://127.0.0.1:8000/api/schedules/1/student"
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Usuarios",
+			"item": [
+				{
+					"name": "New Request",
+					"request": {
+						"method": "GET",
+						"header": []
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Profesor",
+			"item": [
+				{
+					"name": "Obtener clases actuales",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": "http://127.0.0.1:8000/api/schedules/00000128956/list/"
+					},
+					"response": []
+				},
+				{
+					"name": "Crear nueva sesion",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						}
+					},
+					"response": []
+				}
+			]
+		}
+	]
+}

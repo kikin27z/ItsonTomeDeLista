@@ -1,34 +1,38 @@
 from rest_framework import serializers
-from academic.serializers import ScheduleSerializer
+from users.serializers import  ProfileShallowSerializer
 from .models import ClassSession, AttendanceRecord
+import re
 
+class RegisterAttendanceSerializer(serializers.Serializer):
+    student_id = serializers.CharField(required=True)
+    attendance_code = serializers.CharField(min_length=13, required=True)
 
-class ClassSessionSerializer(serializers.Serializer):
-    schedule_id = serializers.IntegerField(required=True, write_only=True)
-    schedule = ScheduleSerializer(read_only=True)
-    actual_start_time = serializers.DateField(read_only=True)
-    status = serializers.CharField(max_length=8)
-    attendance_code = serializers.CharField(max_length=100)
+    def validate_attendance_code(self, value):
+        if not len(value.strip()) >= 13:
+            raise serializers.ValidationError("El codigo debe tener 13 caracteres")
+        return value
 
-    def create(self, validated_data):
-        class_session = ClassSession.objects.create(**validated_data)
-        return class_session
-
-    def update(self, instance, validated_data):
-        instance.schedule_id = validated_data.get("schedule_id", instance.schedule_id)
-        instance.actual_start_time = validated_data.get(
-            "actual_start_time", instance.actual_start_time
-        )
-        instance.status = validated_data.get("status", instance.status)
-        instance.attendance_code = validated_data.get(
-            "attendance_code", instance.attendance_code
-        )
-
-        instance.save()
-        return instance
-
+    def validate_student_id(self, value):
+        if not re.match(r"^00000\d{6}$", value):
+            raise serializers.ValidationError("La matricula del estudiante debe coindicir con 00000######")
+        return value
 
 class AttendanceRecordSerializer(serializers.ModelSerializer):
+    student = ProfileShallowSerializer(read_only=True)
     class Meta:
         model = AttendanceRecord
         fields = "__all__"
+
+class ClassSessionDetailSerializer(serializers.ModelSerializer):
+    attendances = AttendanceRecordSerializer(many=True, read_only=True)
+
+    class Meta:
+        model = ClassSession
+        # 4. List all the fields you want in the output
+        fields = [
+            'id',
+            'actual_start_time',
+            'status',
+            'attendance_code',
+            'attendances'  # <--- 5. Our new nested list
+        ]

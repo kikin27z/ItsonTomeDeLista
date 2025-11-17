@@ -7,7 +7,7 @@ admin.site.register(Course)
 
 @admin.register(Schedule)
 class ScheduleAdmin(admin.ModelAdmin):
-    list_display = ("course", "teacher", "days_of_week")
+    list_display = ("id","course", "teacher", "days_of_week")
     list_filter = ("start_date", "end_date", "teacher")
 
     def formfield_for_foreignkey(self, db_field, request, **kwargs):

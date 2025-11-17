@@ -37,6 +37,7 @@ export async function createTokens(credentials: LoginType): Promise<TokenType> {
         const response = await httpClient.post<TokenType>("token/", credentials);
         return response.data;
     } catch (error: any) {
-        throw new Error('Error al hacer login');
+        // Propaga el error para que el caller (login) lo capture y muestre mensaje adecuado
+        throw error;
     }
 }

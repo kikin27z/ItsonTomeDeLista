@@ -25,15 +25,15 @@ const DashboardTeacher = () => {
             <Box extraClasses='dash-presentation'>
                 <article>
                     <span className='dash-text-description'>Clases a tu cargo</span>
-                    <p className='dash-text-subtitle'>3</p>
+                    <p className='dash-text-subtitle'>{schedules.length}</p>
                 </article>
                 <article>
                     <span className='dash-text-description'>Total de alumnos</span>
-                    <p className='dash-text-subtitle'>83</p>
+                    <p className='dash-text-subtitle'>{schedules.length*35}</p>
                 </article>
                 <article>
                     <span className='dash-text-description'>Sesión activa</span>
-                    <p className='dash-text-subtitle'>4</p>
+                    <p className='dash-text-subtitle'>0</p>
                 </article>
             </Box>
             <Box extraClasses='dash-box-padding'>
@@ -53,7 +53,7 @@ const DashboardTeacher = () => {
                             <p>📍 {s.classroom}</p>
                             <p>👥 35 estudiantes</p>
                         </article>
-                        <button className='dash-btn dash-btn-style1' onClick={() => navigate(`/dashboard/teacher/code-session/${s.id}`)}>Iniciar Toma Asistencia</button>
+                        <button className='dash-btn dash-btn-style1' onClick={() => navigate(`/dashboard/teacher/code-session/${s.id}`, { state: { schedule: s } })}>Asistencia</button>
                     </Box>
                 ))}
             </section>

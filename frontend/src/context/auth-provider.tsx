@@ -42,9 +42,9 @@ const AuthProvider = ({ children }: Props) => {
         userType: decoded.userType,
         major: decoded.major,
       });
-    } catch (error) {// Propagar el error a un componente por si acaso falla crear un jwt
+    } catch (error) {
       throw error;
-    }finally{
+    } finally {
       setIsLoading(false);
     }
   };

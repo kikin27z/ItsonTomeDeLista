@@ -1,4 +1,6 @@
 from rest_framework import serializers
+
+from attendance.serializers import ClassSessionDetailSerializer
 from .models import Course, Schedule, Enrollment
 from users.serializers import ProfileSerializer
 from users.models import Profile
@@ -49,6 +51,7 @@ class ScheduleSerializer(serializers.Serializer):
     days_of_week = serializers.RegexField(
         max_length=12, regex=r"^(Lu)?(Ma)?(Mi)?(Ju)?(Vi)?(Sa)?$"
     )
+    # class_session = ClassSessionDetailSerializer(read_only=True, many=True)
 
 
     def create(self, validated_data):

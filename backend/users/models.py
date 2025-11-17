@@ -24,4 +24,4 @@ class Profile(models.Model):
         return " ".join(part for part in parts if part)
 
     def __str__(self):
-        return f"ID: {self.unique_id} - Name: {self.complete_name()} - Type: {self.user_type}"
+        return f"Profile [ID: {self.unique_id} - Name: {self.complete_name()}]"
