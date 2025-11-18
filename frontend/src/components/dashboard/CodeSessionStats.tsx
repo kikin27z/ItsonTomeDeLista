@@ -10,10 +10,6 @@ const CodeSessionStats = ({ attendances = [] }: Props) => {
 
     return (
         <article className=' flex-column'>
-            <div className='dash-code-timer'>
-                <p className='dash-text-description'>Código de asistencia</p>
-                <h2>00:00</h2>
-            </div>
             <div className='dash-grid-3c' style={{ gridTemplateColumns: '1fr 1fr' }}>
                 <div className='flex-column dash-stats1'>
                     <p className='dash-text-description'>Presente</p>
