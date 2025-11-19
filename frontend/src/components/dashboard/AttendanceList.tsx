@@ -1,4 +1,5 @@
 import React from 'react'
+import CodeSessionStats from './CodeSessionStats'
 
 type Attendance = {
   id: number
@@ -39,31 +40,48 @@ const statusClass = (status: string) => {
   }
 }
 
-const AttendanceList = ({ attendances }: Props) => {
-  if (!attendances || attendances.length === 0) {
-    return <p className='dash-text-description'>No hay registros de asistencia aún.</p>
+const statusLabel = (status: string) => {
+  switch (status) {
+    case 'PRESENT':
+      return 'PRESENTE'
+    case 'ABSENT':
+      return 'AUSENTE'
+    case 'LATE':
+      return 'TARDE'
+    case 'JUSTIFIED':
+      return 'JUSTIFICADA'
+    default:
+      return status
   }
+}
 
+const AttendanceList = ({ attendances }: Props) => {
   return (
     <div className='attendance-list'>
-      <table className='attendance-table'>
-        <thead>
-          <tr>
-            <th>Nombre</th>
-            <th>Estado</th>
-            <th>Fecha de registro</th>
-          </tr>
-        </thead>
-        <tbody>
-          {attendances.map(a => (
-            <tr key={a.id} className='attendance-row'>
-              <td className='attendance-cell name-cell'>{formatName(a.student)}</td>
-              <td className='attendance-cell status-cell'><span className={statusClass(a.status)}>{a.status}</span></td>
-              <td className='attendance-cell time-cell'>{formatDate(a.registration_datetime)}</td>
+      <CodeSessionStats attendances={attendances} />
+
+      {(!attendances || attendances.length === 0) ? (
+        <p className='dash-text-description'>No hay registros de asistencia aún.</p>
+      ) : (
+        <table className='attendance-table'>
+          <thead>
+            <tr>
+              <th>Nombre</th>
+              <th>Estado</th>
+              <th>Fecha de registro</th>
             </tr>
-          ))}
-        </tbody>
-      </table>
+          </thead>
+          <tbody>
+            {attendances.map(a => (
+              <tr key={a.id} className='attendance-row'>
+                <td className='attendance-cell name-cell'>{formatName(a.student)}</td>
+                <td className='attendance-cell status-cell'><span className={statusClass(a.status)}>{statusLabel(a.status)}</span></td>
+                <td className='attendance-cell time-cell'>{formatDate(a.registration_datetime)}</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      )}
     </div>
   )
 }

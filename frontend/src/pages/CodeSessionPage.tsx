@@ -1,10 +1,12 @@
 import Box from '../components/dashboard/Box'
 import CodeBox from '../components/dashboard/CodeBox'
-import CodeSessionStats from '../components/dashboard/CodeSessionStats'
+// CodeSessionStats is now rendered inside `AttendanceList`.
+// CodeSessionStats is rendered inside `AttendanceList`.
 import { useLocation, useParams } from 'react-router'
 import { useEffect, useState } from 'react'
 import type { Schedule } from '../types/academic.types'
 import { GetScheduleById, CreateClassSession, GetClassSessionToday } from '../services/api'
+import * as Api from '../services/api'
 import AttendanceList from '../components/dashboard/AttendanceList'
 import { useAuth } from '../hooks/auth-data'
 import { convertTo12HourFormat } from '../utils/pipe-datetimes'
@@ -29,6 +31,31 @@ const CodeSessionPage = () => {
                     const id = params.id!
                     const data = await GetScheduleById(token, id)
                     setSchedule(data)
+                    // After obtaining schedule, try to fetch an existing session for today
+                    try {
+                        const existing = await GetClassSessionToday(token, String(data.id))
+                        if (existing) {
+                            if (existing.attendance_code) setAttendanceCode(existing.attendance_code)
+                            setSession(existing)
+                        }
+                    } catch (e) {
+                        // If 400/403/401 occurs it will be logged by caller; ignore here
+                        console.error('Error fetching today session on load', e)
+                    }
+                }
+                else {
+                    // If schedule already present (from navigation state), try fetch existing session once
+                    if (!session) {
+                        try {
+                            const existing = await GetClassSessionToday(token, String(schedule.id))
+                            if (existing) {
+                                if (existing.attendance_code) setAttendanceCode(existing.attendance_code)
+                                setSession(existing)
+                            }
+                        } catch (e) {
+                            console.error('Error fetching today session on load', e)
+                        }
+                    }
                 }
             } catch (err) {
                 console.error('Error fetching schedule', err)
@@ -74,22 +101,35 @@ const CodeSessionPage = () => {
         setSession(null)
         setAttendanceCode(null)
     }
+    
+    // Polling: when a session is active, fetch attendances immediately and every 5 seconds
+    useEffect(() => {
+        if (!session || !session.id || !token) return
+        let mounted = true
+        let intervalId: number | null = null
 
-    const handleFetchExistingSession = async () => {
-        if (!token || !schedule) return
-        setLoading(true)
-        try {
-            const existing = await GetClassSessionToday(token, String(schedule.id))
-            if (existing && existing.attendance_code) {
-                setAttendanceCode(existing.attendance_code)
-                setSession(existing)
+        const fetchNow = async () => {
+            try {
+                const data = await Api.GetAttendanceFromSession(token, String(session.id))
+                if (!mounted) return
+                setSession((prev: any) => ({ ...(prev ?? {}), attendances: data }))
+            } catch (err) {
+                console.error('Polling: failed to fetch attendances', err)
             }
-        } catch (err: any) {
-            console.error('Error fetching today session', err)
-        } finally {
-            setLoading(false)
         }
-    }
+
+        // initial immediate fetch
+        fetchNow()
+
+        // start interval
+        intervalId = window.setInterval(fetchNow, 5000)
+
+        return () => {
+            mounted = false
+            if (intervalId) clearInterval(intervalId)
+        }
+    }, [session?.id, token])
+    
 
     if (loading) return <p>Loading...</p>
 
@@ -114,11 +154,9 @@ const CodeSessionPage = () => {
                         ) : (
                             <button className='dash-btn dash-btn-style1' onClick={handleOpenSession}>Abrir sesión de Asistencia</button>
                         )}
-                        <button className='dash-btn' onClick={handleFetchExistingSession}>Buscar sesión existente</button>
                     </div>
                 </article>
 
-                <CodeSessionStats attendances={session?.attendances ?? []} />
                 {session && <AttendanceList attendances={session.attendances ?? []} />}
             </Box>
         </main>

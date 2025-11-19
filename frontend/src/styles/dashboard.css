@@ -100,8 +100,9 @@
 .dash-btn-style1{
     background-color: var(--blueGearFour);
     color: var(--white);
-    max-width: 24rem;
-    margin: 0 0 0 auto;
+    /* Make this button take full width like the close button */
+    max-width: 100%;
+    margin: 0;
 }
 .dash-btn-style1:hover{
     background-color: var(--blueGearSecond);
@@ -178,6 +179,15 @@
     border-radius: 1.25rem;
     padding: 0 .5rem;
     border: 3px solid var(--blueGearSecond);
+}
+
+/* Space between the stats counters and the attendance table */
+.attendance-list .dash-grid-3c {
+    margin-bottom: 1rem;
+}
+
+.attendance-list {
+    margin-top: 1rem;
 }
 .dash-stats-code h2{
     font-size: 2.5rem;

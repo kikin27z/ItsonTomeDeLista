@@ -56,6 +56,20 @@ export async function GetClassSessionToday(token: string, scheduleId: string) {
     }).then(response => response.data);
 }
 
+export async function GetAttendanceFromSession(token: string, sessionId: string, status?: string) {
+    if (!token || token === 'null' || token === 'undefined') {
+        throw new Error('No access token provided')
+    }
+    const params: Record<string,string> = {};
+    if (status) params.status = status;
+    return await httpClient.get<any>(`class-session/${sessionId}/attendances`, {
+        headers: {
+            'Authorization': `Bearer ${token}`
+        },
+        params
+    }).then(response => response.data);
+}
+
 export async function RegisterAttendance(token: string | null, studentId: string, attendanceCode: string) {
     const body = { student_id: studentId, attendance_code: attendanceCode };
     const headers: Record<string,string> = { 'Content-Type': 'application/json' };
