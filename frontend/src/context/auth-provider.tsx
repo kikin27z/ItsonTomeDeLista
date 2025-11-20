@@ -5,7 +5,7 @@ import { ACCESS_TOKEN, REFRESH_TOKEN } from "../config/config";
 import { jwtDecode } from "jwt-decode";
 import type { LoginType } from "../types/login.types";
 import { useNavigate } from "react-router";
-import { createTokens } from "../services/api-auth";
+import { createTokens, refressAccessToken } from "../services/api-auth";
 
 interface Props {
   children: ReactNode;
@@ -49,34 +49,88 @@ const AuthProvider = ({ children }: Props) => {
     }
   };
 
-  //Verifica si el usuario esta guardado en el localstorage y si es el caso lo loguea
   useEffect(() => {
-    setIsLoading(true);
-    const tokenRequested = localStorage.getItem(ACCESS_TOKEN);
-    if (tokenRequested) {
-      try {
-
-        const decoded = jwtDecode<User & { exp: number }>(tokenRequested);
-        //Si la sesión expiro se dirige al logout
-        if (decoded.exp * 1000 < Date.now()) {
-          logout();
-        } else {
-          setToken(tokenRequested);
-          setUser({
-            email: decoded.email,
-            name: decoded.name,
-            username: decoded.username,
-            userType: decoded.userType,
-            major: decoded.major,
-          });
-        }
-      } catch (error) {
-        console.log("Token inválido");
-        logout();
+    const init = async () => {
+      setIsLoading(true);
+      const tokenRequested = localStorage.getItem(ACCESS_TOKEN);
+      if (!tokenRequested) {
+        setIsLoading(false);
+        return;
       }
-      setIsLoading(false);
-    }
+
+      try {
+        const decodedAny = jwtDecode<any>(tokenRequested);
+
+        // If the value stored in ACCESS_TOKEN is actually a refresh token,
+        // exchange it for an access token.
+        if (decodedAny?.token_type === "refresh") {
+          try {
+            const newAccess = await refressAccessToken({ refreshToken: tokenRequested });
+            localStorage.setItem(ACCESS_TOKEN, newAccess);
+            setToken(newAccess);
+            const decoded = jwtDecode<User & { exp: number }>(newAccess);
+            setUser({
+              email: decoded.email,
+              name: decoded.name,
+              username: decoded.username,
+              userType: decoded.userType,
+              major: decoded.major,
+            });
+            setIsLoading(false);
+            return;
+          } catch (err) {
+            logout();
+            return;
+          }
+        }
+
+        // Otherwise assume it's an access token. If expired, try to refresh using stored refresh token.
+        const decoded = decodedAny as User & { exp: number };
+        if (decoded.exp * 1000 < Date.now()) {
+          const refreshStored = localStorage.getItem(REFRESH_TOKEN);
+          if (refreshStored) {
+            try {
+              const newAccess = await refressAccessToken({ refreshToken: refreshStored });
+              localStorage.setItem(ACCESS_TOKEN, newAccess);
+              setToken(newAccess);
+              const dec = jwtDecode<User & { exp: number }>(newAccess);
+              setUser({
+                email: dec.email,
+                name: dec.name,
+                username: dec.username,
+                userType: dec.userType,
+                major: dec.major,
+              });
+              setIsLoading(false);
+              return;
+            } catch (err) {
+              logout();
+              return;
+            }
+          }
+          logout();
+          return;
+        }
+
+        // Valid access token
+        setToken(tokenRequested);
+        setUser({
+          email: decoded.email,
+          name: decoded.name,
+          username: decoded.username,
+          userType: decoded.userType,
+          major: decoded.major,
+        });
+      } catch (e) {
+        logout();
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    init();
   }, []);
+
 
   // Verifica cada 60 segundos si el token sigue siendo válido
   useEffect(() => {
@@ -110,9 +164,9 @@ const AuthProvider = ({ children }: Props) => {
   }
   return (
     <AuthContext.Provider value={values}>
-      {children}
+      {!isLoading && children}
     </AuthContext.Provider>
-  )
+  );
 }
 
 export default AuthProvider

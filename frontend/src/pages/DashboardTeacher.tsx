@@ -14,11 +14,16 @@ const DashboardTeacher = () => {
 
     useEffect(() => {
         const retrieveSchedules = async () => {
-            const data = await GetCoursesAsocciatedTeacher(token!, user!.username);
-            setSchedule(data);
+            if (!token || !user) return
+            try {
+                const data = await GetCoursesAsocciatedTeacher(token, user.username);
+                setSchedule(data);
+            } catch (err) {
+                console.error('Failed to retrieve schedules', err);
+            }
         }
         retrieveSchedules();
-    }, []);
+    }, [token, user]);
 
     return (
         <main className='dash-main-container'>

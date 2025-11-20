@@ -13,6 +13,9 @@ const httpClient = axios.create({
 
 
 export async function GetCoursesAsocciatedTeacher(token: string, idTeacher: string) {
+    if (!token || token === 'null' || token === 'undefined') {
+        throw new Error('No access token provided')
+    }
     return await httpClient.get<Schedule[]>(`schedules/${idTeacher}/list/`, {
         headers: {
             'Authorization': `Bearer ${token}`
@@ -21,6 +24,9 @@ export async function GetCoursesAsocciatedTeacher(token: string, idTeacher: stri
 }
 
 export async function GetScheduleById(token: string, scheduleId: string) {
+    if (!token || token === 'null' || token === 'undefined') {
+        throw new Error('No access token provided')
+    }
     return await httpClient.get<any>(`schedules/${scheduleId}/`, {
         headers: {
             'Authorization': `Bearer ${token}`
@@ -29,6 +35,9 @@ export async function GetScheduleById(token: string, scheduleId: string) {
 }
 
 export async function CreateClassSession(token: string, scheduleId: string) {
+    if (!token || token === 'null' || token === 'undefined') {
+        throw new Error('No access token provided')
+    }
     return await httpClient.post<any>(`class-session/${scheduleId}/new`, {}, {
         headers: {
             'Authorization': `Bearer ${token}`
@@ -37,10 +46,27 @@ export async function CreateClassSession(token: string, scheduleId: string) {
 }
 
 export async function GetClassSessionToday(token: string, scheduleId: string) {
+    if (!token || token === 'null' || token === 'undefined') {
+        throw new Error('No access token provided')
+    }
     return await httpClient.get<any>(`class-session/${scheduleId}/today`, {
         headers: {
             'Authorization': `Bearer ${token}`
         }
+    }).then(response => response.data);
+}
+
+export async function GetAttendanceFromSession(token: string, sessionId: string, status?: string) {
+    if (!token || token === 'null' || token === 'undefined') {
+        throw new Error('No access token provided')
+    }
+    const params: Record<string,string> = {};
+    if (status) params.status = status;
+    return await httpClient.get<any>(`class-session/${sessionId}/attendances`, {
+        headers: {
+            'Authorization': `Bearer ${token}`
+        },
+        params
     }).then(response => response.data);
 }
 
