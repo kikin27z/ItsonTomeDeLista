@@ -1,7 +1,7 @@
-from datetime import date, datetime
+from datetime import date, datetime, timedelta
 from django.db import models, transaction
 from academic.utils.code import create_class_code
-
+from django.utils import timezone
 
 # Create your models here.
 class ClassSession(models.Model):
@@ -91,3 +91,30 @@ class AttendanceRecord(models.Model):
             class_session__actual_start_time__date=date.today(),
             student__unique_id=student_id,
         ).first()
+
+    @staticmethod
+    def student_attendace_history(student, schedule=None, range_date=None):
+        query_set = AttendanceRecord.objects.filter(
+            student__unique_id=student.unique_id,
+        )
+
+        if schedule:
+            query_set = query_set.filter(class_session__schedule=schedule)
+
+        if range_date == 'last_week':
+            end_date = timezone.now()
+            start_date = end_date - timedelta(days=7)
+            query_set = query_set.filter(class_session__actual_start_time__range=[start_date, end_date])
+
+        if range_date == 'last_month':
+            end_date = timezone.now()
+            start_date = end_date - timedelta(days=30)
+            query_set = query_set.filter(class_session__actual_start_time__range=[start_date, end_date])
+
+        if range_date == 'last_semester':
+            naive_start = datetime(2025, 8, 10)
+            start_date = timezone.make_aware(naive_start)
+            end_date = timezone.now()
+            query_set = query_set.filter(class_session__actual_start_time__range=[start_date, end_date])
+
+        return query_set.order_by("-class_session__actual_start_time")

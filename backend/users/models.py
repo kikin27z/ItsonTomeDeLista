@@ -25,3 +25,4 @@ class Profile(models.Model):
 
     def __str__(self):
         return f"Profile [ID: {self.unique_id} - Name: {self.complete_name()}]"
+

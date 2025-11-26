@@ -5,6 +5,7 @@ from rest_framework import status
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
 from academic.models import Schedule
+from users.models import Profile
 from utils.config import WIFI_ADDRESS
 from utils.wifi_detector import get_client_ip, ip_in_range
 from .models import ClassSession,AttendanceRecord
@@ -57,11 +58,25 @@ def ClosedClassSession(request,session_id):
 @api_view(["PUT"])
 def ActivatedClassSession(request,session_id):
     class_session = get_object_or_404(ClassSession, id=session_id)
-   
+
     class_session.status = "ACTIVE"
     class_session.save()
 
     return Response(status=status.HTTP_204_NO_CONTENT)
+
+@api_view(["GET"])
+def GetAttendaceByStudent(request,student_username):
+    student = get_object_or_404(Profile, username=student_username)
+    student = get_object_or_404(Profile, username=student_username)
+
+
+
+
+
+
+@api_view(["GET"])
+def GetAttendaceByTeacher(request,teacher_id):
+    pass
 
 
 @api_view(["GET"])
