@@ -41,6 +41,29 @@ def CreateNewClassSession(request,schedule_id):
     return Response(serializer.data, status=status.HTTP_201_CREATED)
 
 
+@api_view(["PUT"])
+def ClosedClassSession(request,session_id):
+    class_session = get_object_or_404(ClassSession, id=session_id)
+    # if not class_session.is_active_now():
+    #     return Response({"error": "El programa no esta en su horario para cerrar la sesion"},
+    #                     status=status.HTTP_400_BAD_REQUEST)
+
+    class_session.status = "CLOSED"
+    class_session.save()
+
+    return Response(status=status.HTTP_204_NO_CONTENT)
+
+
+@api_view(["PUT"])
+def ActivatedClassSession(request,session_id):
+    class_session = get_object_or_404(ClassSession, id=session_id)
+   
+    class_session.status = "ACTIVE"
+    class_session.save()
+
+    return Response(status=status.HTTP_204_NO_CONTENT)
+
+
 @api_view(["GET"])
 def GetClassSession(request, schedule_id):
     schedule_obj = get_object_or_404(Schedule, id=schedule_id)
