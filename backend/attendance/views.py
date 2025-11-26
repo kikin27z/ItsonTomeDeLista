@@ -5,6 +5,8 @@ from rest_framework import status
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
 from academic.models import Schedule
+from utils.config import WIFI_ADDRESS
+from utils.wifi_detector import get_client_ip, ip_in_range
 from .models import ClassSession,AttendanceRecord
 from .serializers import AttendanceRecordSerializer, ClassSessionDetailSerializer, RegisterAttendanceSerializer
 
@@ -51,6 +53,12 @@ def GetClassSession(request, schedule_id):
 
 @api_view(["POST"])
 def RegisterAttendance(request):
+    # Validar IP del cliente contra rango permitido
+    # user_ip = get_client_ip(request)
+    # ip_permitida = "192.168.1.0/24"  # Cambiar por el rango correcto de la red del servidor
+    #
+    # if not ip_in_range(user_ip, ip_permitida):
+    #     return Response({"error": "Acceso denegado desde esta red."}, status=status.HTTP_403_FORBIDDEN)
 
     # Verificar que existe alguna session con el codigo
     # Verificar que ese codigo el alumno este inscrito
@@ -96,3 +104,13 @@ def GetAttendanceFromSession(request,session_id):
 
     serializer = AttendanceRecordSerializer(attendance, many=True)
     return Response(serializer.data, status=status.HTTP_200_OK)
+
+@api_view(["GET"])
+def test_wifi(request):
+    user_ip = get_client_ip(request)
+    ip_permitida = WIFI_ADDRESS  # Cambiar por el rango correcto de la red del servidor
+
+    if not ip_in_range(user_ip, ip_permitida):
+        return Response({"error": "Acceso denegado desde esta red."}, status=status.HTTP_403_FORBIDDEN)
+
+    return Response(status=status.HTTP_200_OK)
