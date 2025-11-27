@@ -35,7 +35,7 @@ DECLARE
 
     -- --- Variables de Asistencia ---
     v_start_date date := '2025-08-18'; 
-    v_end_date date := '2025-11-14';   
+    v_end_date date := '2025-12-04';   
     v_current_date date;
     v_day_of_week int;
     v_session_id bigint;
