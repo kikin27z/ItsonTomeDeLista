@@ -22,4 +22,6 @@ sqlparse
 qrcode
 celery[redis,django]
 
-ruff
+pandas
+openpyxl==3.1.2
+reportlab

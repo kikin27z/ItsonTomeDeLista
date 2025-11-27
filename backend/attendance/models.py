@@ -1,5 +1,7 @@
 from datetime import date, datetime, timedelta
 from django.db import models, transaction
+from django.db.models.functions import Concat, Coalesce
+from django.db.models import Value, CharField
 from academic.utils.code import create_class_code
 from django.utils import timezone
 
@@ -118,3 +120,40 @@ class AttendanceRecord(models.Model):
             query_set = query_set.filter(class_session__actual_start_time__range=[start_date, end_date])
 
         return query_set.order_by("-class_session__actual_start_time")
+
+    @staticmethod
+    def get_attendance_history_by_schedule(schedule):
+        # Obtener todas las sesiones del schedule
+        sessions = ClassSession.objects.filter(
+            schedule=schedule
+        ).order_by('actual_start_time').values_list('actual_start_time', flat=True)
+
+        # Obtener los registros de asistencia
+        records = AttendanceRecord.objects.filter(
+            class_session__schedule=schedule
+        ).select_related(
+            'student',
+            'class_session'
+        ).annotate(
+            complete_name=Concat(
+                'student__surname',
+                Value(' '),
+                'student__first_name',
+                Value(' '),
+                Coalesce('student__middle_name', Value('')),
+                output_field=CharField()
+            )
+        ).order_by(
+            'complete_name',
+            'class_session__actual_start_time'
+        ).values(
+            'student__unique_id',
+            'complete_name',
+            'class_session__actual_start_time',
+            'status'
+        )
+
+        return {
+            'headers': list(sessions),
+            'records': list(records)
+        }

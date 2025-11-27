@@ -48,3 +48,10 @@ class AttendanceHistorySerializer(serializers.ModelSerializer):
     class Meta:
         model = AttendanceRecord
         fields = "__all__"
+
+
+class AttendanceHistoryListSerializer(serializers.Serializer):
+    student__unique_id = serializers.CharField()
+    complete_name = serializers.CharField()
+    class_session__actual_start_time = serializers.DateTimeField()
+    status = serializers.CharField()

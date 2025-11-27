@@ -7,13 +7,11 @@ from rest_framework.response import Response
 from academic.models import Schedule
 from users.models import Profile
 from utils.config import WIFI_ADDRESS
+from utils.file_handler import ExcelAttendanceExporter, CSVAttendanceExporter, PDFAttendanceExporter
 from utils.wifi_detector import get_client_ip, ip_in_range
 from .models import ClassSession,AttendanceRecord
 from .serializers import AttendanceRecordSerializer, ClassSessionDetailSerializer, RegisterAttendanceSerializer, \
-    AttendanceHistorySerializer
-
-
-# Create your views here.
+    AttendanceHistorySerializer, AttendanceHistoryListSerializer
 
 
 @api_view(["POST"])
@@ -77,9 +75,6 @@ def GetAttendaceByStudent(request,student_username):
     serializer = AttendanceHistorySerializer(attendances, many=True)
 
     return Response(serializer.data, status=status.HTTP_200_OK)
-
-
-
 
 @api_view(["GET"])
 def GetAttendaceByTeacher(request,teacher_username):
@@ -160,3 +155,60 @@ def test_wifi(request):
         return Response({"error": "Acceso denegado desde esta red."}, status=status.HTTP_403_FORBIDDEN)
 
     return Response(status=status.HTTP_200_OK)
+
+from rest_framework.views import APIView
+from rest_framework.response import Response
+
+class AttendanceHistoryView(APIView):
+    def get(self, request, schedule_id):
+        schedule = get_object_or_404(Schedule, id=schedule_id)
+        data = AttendanceRecord.get_attendance_history_by_schedule(schedule)
+
+        records_serializer = AttendanceHistoryListSerializer(data['records'], many=True)
+
+        return Response({
+            'headers': data['headers'],
+            'records': records_serializer.data
+        })
+
+class AttendanceExportViewPDF(APIView):
+    """Vista genérica para exportar asistencias en diferentes formatos"""
+
+    def get(self, request, schedule_id):
+        # Obtener formato solicitado (default: excel)
+        # Seleccionar exportador según formato
+        schedule = get_object_or_404(Schedule, id=schedule_id)
+        data = AttendanceRecord.get_attendance_history_by_schedule(schedule)
+        exporter = PDFAttendanceExporter(data)
+        # Exportar
+        return exporter.export(schedule_id=schedule_id)
+
+class AttendanceExportViewEXCEL(APIView):
+    """Vista genérica para exportar asistencias en diferentes formatos"""
+
+    def get(self, request, schedule_id):
+        # Obtener formato solicitado (default: excel)
+        # Seleccionar exportador según formato
+        schedule = get_object_or_404(Schedule, id=schedule_id)
+        data = AttendanceRecord.get_attendance_history_by_schedule(schedule)
+        exporter = ExcelAttendanceExporter(data)
+        # Exportar
+        return exporter.export(schedule_id=schedule_id)
+
+class AttendanceExportViewCSV(APIView):
+    """Vista genérica para exportar asistencias en diferentes formatos"""
+
+    def get(self, request, schedule_id):
+        # Obtener formato solicitado (default: excel)
+        # Seleccionar exportador según formato
+        schedule = get_object_or_404(Schedule, id=schedule_id)
+
+        export_format = request.GET.get('format', 'excel')
+
+        # Obtener datos
+        data = AttendanceRecord.get_attendance_history_by_schedule(schedule)
+
+        exporter = CSVAttendanceExporter(data)
+
+        # Exportar
+        return exporter.export(schedule_id=schedule_id)
