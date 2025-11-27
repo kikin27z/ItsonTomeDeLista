@@ -9,7 +9,9 @@ from users.models import Profile
 from utils.config import WIFI_ADDRESS
 from utils.wifi_detector import get_client_ip, ip_in_range
 from .models import ClassSession,AttendanceRecord
-from .serializers import AttendanceRecordSerializer, ClassSessionDetailSerializer, RegisterAttendanceSerializer
+from .serializers import AttendanceRecordSerializer, ClassSessionDetailSerializer, RegisterAttendanceSerializer, \
+    AttendanceHistorySerializer
+
 
 # Create your views here.
 
@@ -66,16 +68,22 @@ def ActivatedClassSession(request,session_id):
 
 @api_view(["GET"])
 def GetAttendaceByStudent(request,student_username):
-    student = get_object_or_404(Profile, username=student_username)
-    student = get_object_or_404(Profile, username=student_username)
+    student = get_object_or_404(Profile, unique_id=student_username)
 
+    date_range = request.GET.get('range_date', 'last_week')
+    schedule_id = request.GET.get('schedule_id', None)
 
+    attendances = AttendanceRecord.student_attendace_history(student, schedule_id, date_range)
+    serializer = AttendanceHistorySerializer(attendances, many=True)
+
+    return Response(serializer.data, status=status.HTTP_200_OK)
 
 
 
 
 @api_view(["GET"])
-def GetAttendaceByTeacher(request,teacher_id):
+def GetAttendaceByTeacher(request,teacher_username):
+    teacher = get_object_or_404(Profile, username=teacher_username)
     pass
 
 

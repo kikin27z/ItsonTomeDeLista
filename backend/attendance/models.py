@@ -93,13 +93,13 @@ class AttendanceRecord(models.Model):
         ).first()
 
     @staticmethod
-    def student_attendace_history(student, schedule=None, range_date=None):
+    def student_attendace_history(student, schedule_id=None, range_date=None):
         query_set = AttendanceRecord.objects.filter(
             student__unique_id=student.unique_id,
         )
 
-        if schedule:
-            query_set = query_set.filter(class_session__schedule=schedule)
+        if schedule_id:
+            query_set = query_set.filter(class_session__schedule_id=schedule_id)
 
         if range_date == 'last_week':
             end_date = timezone.now()
@@ -111,7 +111,7 @@ class AttendanceRecord(models.Model):
             start_date = end_date - timedelta(days=30)
             query_set = query_set.filter(class_session__actual_start_time__range=[start_date, end_date])
 
-        if range_date == 'last_semester':
+        if range_date == 'semester':
             naive_start = datetime(2025, 8, 10)
             start_date = timezone.make_aware(naive_start)
             end_date = timezone.now()

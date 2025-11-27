@@ -23,6 +23,12 @@ class AttendanceRecordSerializer(serializers.ModelSerializer):
         model = AttendanceRecord
         fields = "__all__"
 
+
+class ClassSessionShallowSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = ClassSession
+        fields = ['actual_start_time']
+
 class ClassSessionDetailSerializer(serializers.ModelSerializer):
     attendances = AttendanceRecordSerializer(many=True, read_only=True)
 
@@ -36,3 +42,9 @@ class ClassSessionDetailSerializer(serializers.ModelSerializer):
             'attendance_code',
             'attendances'  # <--- 5. Our new nested list
         ]
+
+class AttendanceHistorySerializer(serializers.ModelSerializer):
+    class_session = ClassSessionShallowSerializer(read_only=True)
+    class Meta:
+        model = AttendanceRecord
+        fields = "__all__"
