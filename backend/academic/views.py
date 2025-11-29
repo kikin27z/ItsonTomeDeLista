@@ -68,19 +68,24 @@ def GetScheduleDetail(request,id):
 
 @api_view(["GET"])
 def GetStudentsFromSchedule(request, schedule_id):
-    if not schedule_id:
+    try:
+        schedule_obj = Schedule.objects.get(pk=schedule_id)
+    except Schedule.DoesNotExist:
         return Response(
-            {"message": "ID de la clase no proporcionado"},
-            status=status.HTTP_400_BAD_REQUEST,
+            {"error": "Horario no encontrado"}, 
+            status=status.HTTP_404_NOT_FOUND
         )
-    shedule_obj = Schedule.objects.get(pk=schedule_id)
-    students = (
-        shedule_obj.get_students()
-        .annotate(full_name=Concat("surname", Value(" "), "first_name"))
-        .order_by("full_name")
-    )
-    serializer = ProfileSerializer(students, many=True)
+    
+    students = Enrollment.objects.filter(
+        schedule=schedule_obj,
+        status="ACTIVE"
+    ).values_list("student", flat=True)
+    
+    students_profiles = Profile.objects.filter(pk__in=students).order_by("full_name")
+    serializer = ProfileSerializer(students_profiles, many=True)
+    
     return Response(serializer.data, status=status.HTTP_200_OK)
+
 
 
 @api_view(["POST"])

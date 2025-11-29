@@ -1,8 +1,8 @@
 from datetime import datetime
-
 from django.shortcuts import get_object_or_404
 from rest_framework import status
-from rest_framework.decorators import api_view
+from rest_framework.decorators import api_view, permission_classes
+from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from academic.models import Schedule
 from users.models import Profile
@@ -135,11 +135,27 @@ def RegisterAttendance(request):
 @api_view(["GET"])
 def GetAttendanceFromSession(request,session_id):
     class_session = get_object_or_404(ClassSession, id=session_id)
-
-    status_class = request.GET.get("status")
+    
+    # aquí valido que el usuario autenticado es el profesor de esta clase
+    if class_session.schedule.teacher != request.user.profile:
+        return Response(
+            {"error": "No tienes permiso para ver la asistencia de esta clase"},
+            status=status.HTTP_403_FORBIDDEN
+        )
+    
+    # Obtener filtro de estado (opcional)
+    status_filter = request.GET.get("status")
     valid_statuses = [choice[0] for choice in AttendanceRecord.STATUS_CHOICES]
-    if status_class in valid_statuses:
-        attendance = class_session.get_attendances(status_class)
+    
+    if status_filter and status_filter not in valid_statuses:
+        return Response(
+            {"error": f"Estado inválido. Opciones válidas: {valid_statuses}"},
+            status=status.HTTP_400_BAD_REQUEST
+        )
+    
+    # en esta parte obtengo los registros de asistencia
+    if status_filter:
+        attendance_records = class_session.get_attendances(status_filter)
     else:
         attendance = class_session.get_attendances()
 
