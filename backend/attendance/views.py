@@ -5,11 +5,13 @@ from rest_framework.decorators import api_view, permission_classes
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from academic.models import Schedule
-from .models import ClassSession, AttendanceRecord
-from .serializers import AttendanceRecordSerializer, ClassSessionDetailSerializer, RegisterAttendanceSerializer
-
-
-# Create your views here.
+from users.models import Profile
+from utils.config import WIFI_ADDRESS
+from utils.file_handler import ExcelAttendanceExporter, CSVAttendanceExporter, PDFAttendanceExporter
+from utils.wifi_detector import get_client_ip, ip_in_range
+from .models import ClassSession,AttendanceRecord
+from .serializers import AttendanceRecordSerializer, ClassSessionDetailSerializer, RegisterAttendanceSerializer, \
+    AttendanceHistorySerializer, AttendanceHistoryListSerializer
 
 
 @api_view(["POST"])
@@ -40,6 +42,46 @@ def CreateNewClassSession(request,schedule_id):
     return Response(serializer.data, status=status.HTTP_201_CREATED)
 
 
+@api_view(["PUT"])
+def ClosedClassSession(request,session_id):
+    class_session = get_object_or_404(ClassSession, id=session_id)
+    # if not class_session.is_active_now():
+    #     return Response({"error": "El programa no esta en su horario para cerrar la sesion"},
+    #                     status=status.HTTP_400_BAD_REQUEST)
+
+    class_session.status = "CLOSED"
+    class_session.save()
+
+    return Response(status=status.HTTP_204_NO_CONTENT)
+
+
+@api_view(["PUT"])
+def ActivatedClassSession(request,session_id):
+    class_session = get_object_or_404(ClassSession, id=session_id)
+
+    class_session.status = "ACTIVE"
+    class_session.save()
+
+    return Response(status=status.HTTP_204_NO_CONTENT)
+
+@api_view(["GET"])
+def GetAttendaceByStudent(request,student_username):
+    student = get_object_or_404(Profile, unique_id=student_username)
+
+    date_range = request.GET.get('range_date', 'last_week')
+    schedule_id = request.GET.get('schedule_id', None)
+
+    attendances = AttendanceRecord.student_attendace_history(student, schedule_id, date_range)
+    serializer = AttendanceHistorySerializer(attendances, many=True)
+
+    return Response(serializer.data, status=status.HTTP_200_OK)
+
+@api_view(["GET"])
+def GetAttendaceByTeacher(request,teacher_username):
+    teacher = get_object_or_404(Profile, username=teacher_username)
+    pass
+
+
 @api_view(["GET"])
 def GetClassSession(request, schedule_id):
     schedule_obj = get_object_or_404(Schedule, id=schedule_id)
@@ -52,6 +94,12 @@ def GetClassSession(request, schedule_id):
 
 @api_view(["POST"])
 def RegisterAttendance(request):
+    # Validar IP del cliente contra rango permitido
+    # user_ip = get_client_ip(request)
+    # ip_permitida = "192.168.1.0/24"  # Cambiar por el rango correcto de la red del servidor
+    #
+    # if not ip_in_range(user_ip, ip_permitida):
+    #     return Response({"error": "Acceso denegado desde esta red."}, status=status.HTTP_403_FORBIDDEN)
 
     # Verificar que existe alguna session con el codigo
     # Verificar que ese codigo el alumno este inscrito
@@ -109,68 +157,74 @@ def GetAttendanceFromSession(request,session_id):
     if status_filter:
         attendance_records = class_session.get_attendances(status_filter)
     else:
-        attendance_records = class_session.get_attendances()
-    
-    # aquí calculo las estadísticas
-    total_students = class_session.students_count()
-    present_count = class_session.get_attendances("PRESENT").count()
-    late_count = class_session.get_attendances("LATE").count()
-    justified_count = class_session.get_attendances("JUSTIFIED").count()
-    absent_count = class_session.get_attendances("ABSENT").count()
-    
-    serializer = AttendanceRecordSerializer(attendance_records, many=True)
-    
-    # esto es lo que devuelvo en la respuesta
-    return Response({
-        "session": {
-            "id": class_session.id,
-            "attendance_code": class_session.attendance_code,
-            "status": class_session.status,
-            "actual_start_time": class_session.actual_start_time,
-        },
-        "statistics": {
-            "total_students": total_students,
-            "present": present_count,
-            "late": late_count,
-            "justified": justified_count,
-            "absent": absent_count,
-        },
-        "attendance_list": serializer.data,
-    }, status=status.HTTP_200_OK)
+        attendance = class_session.get_attendances()
 
-# este metodo si es que se le puede llamar metodo es lo del historial de sesiones
+    serializer = AttendanceRecordSerializer(attendance, many=True)
+    return Response(serializer.data, status=status.HTTP_200_OK)
+
 @api_view(["GET"])
-@permission_classes([IsAuthenticated])
-def GetSessionsHistory(request, schedule_id):
-    schedule = get_object_or_404(Schedule, id=schedule_id)
-    
-    # aquí valido que el usuario autenticado es el profesor
-    if schedule.teacher != request.user.profile:
-        return Response(
-            {"error": "No tienes permiso para ver el historial de esta clase"},
-            status=status.HTTP_403_FORBIDDEN
-        )
-    
-    # aquí obtengo todas las sesiones de la clase
-    sessions = ClassSession.objects.filter(schedule=schedule).order_by('-actual_start_time')
-    
-    sessions_data = []
-    for session in sessions:
-        total = session.students_count()
-        present = session.get_attendances("PRESENT").count()
-        
-        sessions_data.append({
-            "id": session.id,
-            "date": session.actual_start_time,
-            "status": session.status,
-            "attendance_code": session.attendance_code,
-            "attendance_rate": f"{(present/total*100):.1f}%" if total > 0 else "0%",
-            "present_count": present,
-            "total_students": total,
+def test_wifi(request):
+    user_ip = get_client_ip(request)
+    ip_permitida = WIFI_ADDRESS  # Cambiar por el rango correcto de la red del servidor
+
+    if not ip_in_range(user_ip, ip_permitida):
+        return Response({"error": "Acceso denegado desde esta red."}, status=status.HTTP_403_FORBIDDEN)
+
+    return Response(status=status.HTTP_200_OK)
+
+from rest_framework.views import APIView
+from rest_framework.response import Response
+
+class AttendanceHistoryView(APIView):
+    def get(self, request, schedule_id):
+        schedule = get_object_or_404(Schedule, id=schedule_id)
+        data = AttendanceRecord.get_attendance_history_by_schedule(schedule)
+
+        records_serializer = AttendanceHistoryListSerializer(data['records'], many=True)
+
+        return Response({
+            'headers': data['headers'],
+            'records': records_serializer.data
         })
-    
-    return Response({
-        "schedule_id": schedule_id,
-        "class_name":"{schedule.subject.name}",
-        "sessions": sessions_data,
-    }, status=status.HTTP_200_OK)
+
+class AttendanceExportViewPDF(APIView):
+    """Vista genérica para exportar asistencias en diferentes formatos"""
+
+    def get(self, request, schedule_id):
+        # Obtener formato solicitado (default: excel)
+        # Seleccionar exportador según formato
+        schedule = get_object_or_404(Schedule, id=schedule_id)
+        data = AttendanceRecord.get_attendance_history_by_schedule(schedule)
+        exporter = PDFAttendanceExporter(data)
+        # Exportar
+        return exporter.export(schedule_id=schedule_id)
+
+class AttendanceExportViewEXCEL(APIView):
+    """Vista genérica para exportar asistencias en diferentes formatos"""
+
+    def get(self, request, schedule_id):
+        # Obtener formato solicitado (default: excel)
+        # Seleccionar exportador según formato
+        schedule = get_object_or_404(Schedule, id=schedule_id)
+        data = AttendanceRecord.get_attendance_history_by_schedule(schedule)
+        exporter = ExcelAttendanceExporter(data)
+        # Exportar
+        return exporter.export(schedule_id=schedule_id)
+
+class AttendanceExportViewCSV(APIView):
+    """Vista genérica para exportar asistencias en diferentes formatos"""
+
+    def get(self, request, schedule_id):
+        # Obtener formato solicitado (default: excel)
+        # Seleccionar exportador según formato
+        schedule = get_object_or_404(Schedule, id=schedule_id)
+
+        export_format = request.GET.get('format', 'excel')
+
+        # Obtener datos
+        data = AttendanceRecord.get_attendance_history_by_schedule(schedule)
+
+        exporter = CSVAttendanceExporter(data)
+
+        # Exportar
+        return exporter.export(schedule_id=schedule_id)

@@ -1,3 +1,4 @@
+from django.shortcuts import get_object_or_404
 from rest_framework import viewsets, status
 from rest_framework_simplejwt.authentication import JWTAuthentication
 from rest_framework.permissions import IsAuthenticated, AllowAny
@@ -34,6 +35,18 @@ def GetScheduleById(request, teacher_id):
 
     serializer = ScheduleShallowSerializer(schedules, many=True)
     return Response(serializer.data, status=status.HTTP_200_OK)
+
+@api_view(['GET'])
+def GetScheduleByStudent(request, student_username):
+    student = get_object_or_404(Profile, unique_id=student_username)
+    schedules = Schedule.objects.filter(
+        enrollments__student=student,
+        enrollments__status="ACTIVE"
+    )
+
+    serializer = ScheduleShallowSerializer(schedules, many=True)
+    return Response(serializer.data, status=status.HTTP_200_OK)
+
 
 @api_view(["GET"])
 def GetScheduleDetail(request,id):

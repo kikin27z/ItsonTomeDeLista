@@ -41,5 +41,10 @@ urlpatterns = [
         views.MassiveInsertionEnrollment,
         name="massive-insertion-enrollment",
     ),
+    path(
+        "enrollments/student/<str:student_username>",
+        views.GetScheduleByStudent,
+        name="shedule-enrollment-student",
+    ),
     path("", include(router.urls)),
 ]

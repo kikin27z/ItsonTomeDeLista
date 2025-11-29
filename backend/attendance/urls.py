@@ -1,10 +1,20 @@
 from django.urls import path
-from .views import CreateNewClassSession, GetClassSession, GetAttendanceFromSession, RegisterAttendance,GetSessionsHistory
+from .views import CreateNewClassSession, GetClassSession, GetAttendanceFromSession, RegisterAttendance, test_wifi, \
+    ClosedClassSession, ActivatedClassSession, GetAttendaceByStudent, GetAttendaceByTeacher, AttendanceHistoryView, \
+    AttendanceExportViewPDF, AttendanceExportViewEXCEL, AttendanceExportViewCSV
 
 urlpatterns = [
     path('class-session/<int:schedule_id>/new', CreateNewClassSession, name='create-new-class-session' ),
     path('class-session/<int:schedule_id>/today', GetClassSession, name='get-class-session'),
-    path('<int:session_id>/attendances', GetAttendanceFromSession, name='get-class-session'),
+    path('class-session/<int:session_id>/attendances', GetAttendanceFromSession, name='get-class-session'),
     path('class-session/register', RegisterAttendance, name='register-class-session'),
-    path('sessions-history/<int:schedule_id>/', GetSessionsHistory, name="get-sessions-history")
+    path('class-session/<int:session_id>/closed', ClosedClassSession, name='closed-class-session'),
+    path('class-session/<int:session_id>/active', ActivatedClassSession, name='activated-class-session'),
+    path('attendance/student/<str:student_username>', GetAttendaceByStudent, name='filter-attendace-student'),
+    path('attendance/teacher/<str:teacher_username>', GetAttendaceByTeacher, name='filter-attendance-teacher'),
+    path('attendance/history/<int:schedule_id>', AttendanceHistoryView.as_view(), name='attendance-history'),
+    path('attendance/export-excel/<int:schedule_id>', AttendanceExportViewEXCEL.as_view(), name='attendance-history-export-excel'),
+    path('attendance/export-pdf/<int:schedule_id>', AttendanceExportViewPDF.as_view(), name='attendance-history-export-pdf'),
+    path('attendance/export-csv/<int:schedule_id>', AttendanceExportViewCSV.as_view(), name='attendance-history-export-csv'),
+    path('test-wifi', test_wifi, name='test-wifi')
 ]
