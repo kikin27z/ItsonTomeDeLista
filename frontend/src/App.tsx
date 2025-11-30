@@ -6,6 +6,7 @@ import DashboardStudent from "./pages/DashboardStudent"
 import AttendanceHistory from "./pages/AttendanceHistory"
 import DashboardTeacher from "./pages/DashboardTeacher"
 import CodeSessionPage from "./pages/CodeSessionPage"
+import SessionHistory from "./pages/SessionHistory"
 
 
 function App() {
@@ -25,6 +26,7 @@ function App() {
             <Route path="teacher">
               <Route index element={<DashboardTeacher />} />
               <Route path="code-session/:idCourse" element={<CodeSessionPage />} />
+              <Route path="session-history" element={<SessionHistory />} />
             </Route>
           </Route>
 

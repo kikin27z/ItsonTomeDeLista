@@ -1,8 +1,6 @@
 import Box from '../components/dashboard/Box'
 import CodeBox from '../components/dashboard/CodeBox'
-// CodeSessionStats is now rendered inside `AttendanceList`.
-// CodeSessionStats is rendered inside `AttendanceList`.
-import { useLocation, useParams } from 'react-router'
+import { useLocation, useParams, Link } from 'react-router'
 import { useEffect, useState } from 'react'
 import type { Schedule } from '../types/academic.types'
 import { GetScheduleById, CreateClassSession, GetClassSessionToday, CloseClassSession } from '../services/api'
@@ -19,7 +17,13 @@ const CodeSessionPage = () => {
     const [schedule, setSchedule] = useState<Schedule | null>(state?.schedule ?? null)
     const [loading, setLoading] = useState<boolean>(!state?.schedule)
     const [attendanceCode, setAttendanceCode] = useState<string | null>(null)
-    const [session, setSession] = useState<any | null>(null)
+    interface ClassSessionState {
+        id: number
+        status: 'ACTIVE' | 'CLOSED'
+        attendance_code?: string | null
+        attendances?: any[]
+    }
+    const [session, setSession] = useState<ClassSessionState | null>(null)
 
     useEffect(() => {
         const load = async () => {
@@ -31,7 +35,6 @@ const CodeSessionPage = () => {
                     const id = params.id!
                     const data = await GetScheduleById(token, id)
                     setSchedule(data)
-                    // After obtaining schedule, try to fetch an existing session for today
                     try {
                         const existing = await GetClassSessionToday(token, String(data.id))
                         if (existing) {
@@ -101,7 +104,8 @@ const CodeSessionPage = () => {
         setLoading(true);
         try {
             await CloseClassSession(token, String(session.id));
-            setSession((prev: any) => prev ? { ...prev, status: 'CLOSED' } : null);
+            // Mantener attendances ya cargadas, sólo mutar estado / code
+            setSession((prev) => prev ? { ...prev, status: 'CLOSED', attendance_code: null } : null);
             setAttendanceCode(null);
         } catch (err) {
             console.error('Error closing class session', err);
@@ -112,7 +116,8 @@ const CodeSessionPage = () => {
     
     // Polling: when a session is active, fetch attendances immediately and every 5 seconds
     useEffect(() => {
-        if (!session || !session.id || !token) return
+        // Sólo hacer polling si la sesión está activa
+        if (!session || !session.id || !token || session.status !== 'ACTIVE') return
         let mounted = true
         let intervalId: number | null = null
 
@@ -136,7 +141,7 @@ const CodeSessionPage = () => {
             mounted = false
             if (intervalId) clearInterval(intervalId)
         }
-    }, [session?.id, token])
+    }, [session?.id, session?.status, token])
     
 
     if (loading) return <p>Loading...</p>
@@ -147,26 +152,43 @@ const CodeSessionPage = () => {
                 <article>
                     <h3>{schedule?.course?.name ?? 'Curso'}</h3>
                     <p className='dash-text-description'>{schedule ? `${schedule.days_of_week} ${convertTo12HourFormat(schedule.start_time)} - ${convertTo12HourFormat(schedule.end_time)}` : ''}, {schedule?.classroom} </p>
-                    {attendanceCode && session ? (
+                    {session?.status === 'ACTIVE' && attendanceCode ? (
                         <>
                             <CodeBox code={attendanceCode} />
                             <p className='dash-text-description txt-c'>Los alumnos pueden ingresar el número para registrar asistencia</p>
                         </>
+                    ) : session && session.status === 'CLOSED' ? (
+                        <p className='dash-text-description txt-c'>La sesión de asistencia de hoy ya fue cerrada.</p>
                     ) : (
                         <p className='dash-text-description txt-c'>No hay sesión de asistencia abierta. Presiona el botón para abrir una.</p>
                     )}
 
                     <div style={{ marginTop: 12, display: 'flex', gap: 12 }}>
-                        {session && session.status === 'ACTIVE' ? (
-                            <button className='dash-btn dash-btn-close-sesion' onClick={handleCloseSession}>Cerrar sesión de Asistencia</button>
+                        {session ? (
+                            session.status === 'ACTIVE' ? (
+                                <button className='dash-btn dash-btn-close-sesion' onClick={handleCloseSession}>Cerrar sesión de Asistencia</button>
+                            ) : (
+                                // Sesión cerrada: deshabilitar completamente abrir
+                                <button className='dash-btn dash-btn-style1' disabled title='La sesión de hoy ya está cerrada'>Sesión cerrada</button>
+                            )
                         ) : (
-                            <button className='dash-btn dash-btn-style1' onClick={handleOpenSession}>Abrir sesión de Asistencia</button>
+                            <button
+                                className='dash-btn dash-btn-style1'
+                                onClick={handleOpenSession}
+                                disabled={loading}
+                                title={loading ? 'Procesando...' : 'Abrir sesión de Asistencia'}
+                            >Abrir sesión de Asistencia</button>
                         )}
                     </div>
                 </article>
 
                 {session && <AttendanceList attendances={session.attendances ?? []} />}
             </Box>
+            <div style={{ display: 'flex', width: '100%', gap: 12 }}>
+                    <Link to="/dashboard/teacher/session-history" className='dash-btn dash-btn-style1' style={{ textAlign: 'center' }}>
+                        Ver historial de sesiones
+                    </Link>
+                </div>
         </main>
     )
 }
