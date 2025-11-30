@@ -132,3 +132,54 @@ export async function GetEnrollmentsStudent(token: string, username: string) {
         }
     }).then(response => response.data);
 }
+
+// Obtener historial de asistencia por schedule ID
+export async function GetAttendanceHistory(token: string, scheduleId: string) {
+    if (!token || token === 'null' || token === 'undefined') {
+        throw new Error('No access token provided');
+    }
+    return await httpClient.get<any>(`attendance/history/${scheduleId}`, {
+        headers: {
+            'Authorization': `Bearer ${token}`
+        }
+    }).then(response => response.data);
+}
+
+// Exportar asistencia en PDF
+export async function ExportAttendancePDF(token: string, scheduleId: string) {
+    if (!token || token === 'null' || token === 'undefined') {
+        throw new Error('No access token provided');
+    }
+    return await httpClient.get(`attendance/export-pdf/${scheduleId}`, {
+        headers: {
+            'Authorization': `Bearer ${token}`
+        },
+        responseType: 'blob'
+    }).then(response => response.data);
+}
+
+// Exportar asistencia en Excel
+export async function ExportAttendanceExcel(token: string, scheduleId: string) {
+    if (!token || token === 'null' || token === 'undefined') {
+        throw new Error('No access token provided');
+    }
+    return await httpClient.get(`attendance/export-excel/${scheduleId}`, {
+        headers: {
+            'Authorization': `Bearer ${token}`
+        },
+        responseType: 'blob'
+    }).then(response => response.data);
+}
+
+// Exportar asistencia en CSV
+export async function ExportAttendanceCSV(token: string, scheduleId: string) {
+    if (!token || token === 'null' || token === 'undefined') {
+        throw new Error('No access token provided');
+    }
+    return await httpClient.get(`attendance/export-csv/${scheduleId}`, {
+        headers: {
+            'Authorization': `Bearer ${token}`
+        },
+        responseType: 'blob'
+    }).then(response => response.data);
+}

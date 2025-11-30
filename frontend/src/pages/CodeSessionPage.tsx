@@ -150,8 +150,21 @@ const CodeSessionPage = () => {
         <main className='dash-main-container'>
             <Box extraClasses='dash-stats-container'>
                 <article>
-                    <h3>{schedule?.course?.name ?? 'Curso'}</h3>
-                    <p className='dash-text-description'>{schedule ? `${schedule.days_of_week} ${convertTo12HourFormat(schedule.start_time)} - ${convertTo12HourFormat(schedule.end_time)}` : ''}, {schedule?.classroom} </p>
+                    <div className='course-header-section'>
+                        <div className='course-info'>
+                            <h3>{schedule?.course?.name ?? 'Curso'}</h3>
+                            <p className='dash-text-description'>{schedule ? `${schedule.days_of_week} ${convertTo12HourFormat(schedule.start_time)} - ${convertTo12HourFormat(schedule.end_time)}` : ''}, {schedule?.classroom} </p>
+                        </div>
+                        <Link to="/dashboard/teacher/session-history" className='history-link-btn'>
+                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                                <path d="M3 12a9 9 0 0 1 9-9 9.75 9.75 0 0 1 6.74 2.74L21 8"/>
+                                <path d="M21 3v5h-5"/>
+                                <path d="M21 12a9 9 0 0 1-9 9 9.75 9.75 0 0 1-6.74-2.74L3 16"/>
+                                <path d="M8 16H3v5"/>
+                            </svg>
+                            Historial de asistencia
+                        </Link>
+                    </div>
                     {session?.status === 'ACTIVE' && attendanceCode ? (
                         <>
                             <CodeBox code={attendanceCode} />
@@ -184,11 +197,7 @@ const CodeSessionPage = () => {
 
                 {session && <AttendanceList attendances={session.attendances ?? []} />}
             </Box>
-            <div style={{ display: 'flex', width: '100%', gap: 12 }}>
-                    <Link to="/dashboard/teacher/session-history" className='dash-btn dash-btn-style1' style={{ textAlign: 'center' }}>
-                        Ver historial de sesiones
-                    </Link>
-                </div>
+            
         </main>
     )
 }
