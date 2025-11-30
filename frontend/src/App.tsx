@@ -3,6 +3,7 @@ import AuthProvider from "./context/auth-provider"
 import LoginPage from "./pages/LoginPage"
 import DashBoardLayout from "./layout/DashBoardLayout"
 import DashboardStudent from "./pages/DashboardStudent"
+import AttendanceHistory from "./pages/AttendanceHistory"
 import DashboardTeacher from "./pages/DashboardTeacher"
 import CodeSessionPage from "./pages/CodeSessionPage"
 
@@ -19,6 +20,7 @@ function App() {
           <Route path="dashboard" element={<DashBoardLayout />}>
             <Route path="student">
               <Route index element={<DashboardStudent />} />
+              <Route path="attendance-history" element={<AttendanceHistory />} />
             </Route>
             <Route path="teacher">
               <Route index element={<DashboardTeacher />} />

@@ -2,13 +2,16 @@ import { useAuth } from '../hooks/auth-data';
 import Box from '../components/dashboard/Box';
 import { useState } from 'react';
 import { RegisterAttendance } from '../services/api';
+import { useNavigate } from 'react-router';
+
 
 const DashboardStudent = () => {
-    const { user, token } = useAuth()
-    const [code, setCode] = useState<string>('')
-    const [loading, setLoading] = useState<boolean>(false)
-    const [message, setMessage] = useState<string | null>(null)
-    const [error, setError] = useState<string | null>(null)
+    const { user, token } = useAuth();
+    const [code, setCode] = useState<string>('');
+    const [loading, setLoading] = useState<boolean>(false);
+    const [message, setMessage] = useState<string | null>(null);
+    const [error, setError] = useState<string | null>(null);
+    const navigate = useNavigate();
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault()
@@ -61,6 +64,7 @@ const DashboardStudent = () => {
                     <p className='dash-text-subtitle'>{user?.email}</p>
                 </article>
             </Box>
+            
             <Box extraClasses='dash-box-flex'>
                 <h2>Registra tu Asistencia</h2>
                 <p className='dash-text-description'>Ingresa el código de asistencia proporcionado por tu profesor</p>
@@ -89,6 +93,15 @@ const DashboardStudent = () => {
                     </form>
                 )}
             </Box>
+            <div style={{ display: 'flex', justifyContent: 'center', marginTop: 24 }}>
+                <button
+                    className='dash-btn dash-btn-style1'
+                    style={{ fontSize: 16, padding: '12px 32px', borderRadius: 8 }}
+                    onClick={() => navigate('/dashboard/student/attendance-history')}
+                >
+                    Ver historial de asistencia
+                </button>
+            </div>
 
         </main>
     )
