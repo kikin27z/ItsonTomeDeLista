@@ -41,7 +41,7 @@ export async function CloseClassSession(token: string, sessionId: string) {
     }).then(response => response.data);
 }
 import axios from "axios";
-import type { Schedule } from "../types/academic.types";
+import type { Schedule, Enrollment } from "../types/academic.types";
 import { API_URL, ACCESS_TOKEN } from "../config/config";
 
 
@@ -119,4 +119,16 @@ export async function RegisterAttendance(token: string | null, studentId: string
     const stored = token ?? (typeof localStorage !== 'undefined' ? localStorage.getItem(ACCESS_TOKEN) : null);
     if (stored) headers['Authorization'] = `Bearer ${stored}`;
     return await httpClient.post<any>(`class-session/register`, body, { headers }).then(response => response.data);
+}
+
+// Obtener enrollments (inscripciones) del estudiante por su username
+export async function GetEnrollmentsStudent(token: string, username: string) {
+    if (!token || token === 'null' || token === 'undefined') {
+        throw new Error('No access token provided');
+    }
+    return await httpClient.get<Enrollment[]>(`enrollments/student/${username}`, {
+        headers: {
+            'Authorization': `Bearer ${token}`
+        }
+    }).then(response => response.data);
 }

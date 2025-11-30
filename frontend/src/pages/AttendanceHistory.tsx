@@ -2,9 +2,8 @@ import { useState, useEffect } from "react"
 import { useAuth } from "../hooks/auth-data"
 import { format } from "date-fns"
 import "./AttendanceHistory.css"
-import { getAttendanceHistory } from "../services/api"
-
-const COURSES = [{ id: 42, name: "Métodos Ágiles de Desarrollo" }]
+import { getAttendanceHistory, GetEnrollmentsStudent } from "../services/api"
+import type { Enrollment } from "../types/academic.types"
 
 const FILTERS = [
   { value: "last_week", label: "Última semana" },
@@ -43,15 +42,40 @@ interface Attendance {
 const AttendanceHistory = () => {
   const { token, user } = useAuth()
   const [filterType, setFilterType] = useState<"course" | "date">("course")
-  const [courseId, setCourseId] = useState<number>(42)
+  const [courseId, setCourseId] = useState<number | null>(null)
   const [dateRange, setDateRange] = useState<string>("last_week")
   const [attendances, setAttendances] = useState<Attendance[]>([])
   const [loading, setLoading] = useState<boolean>(false)
+  const [enrollments, setEnrollments] = useState<Enrollment[]>([])
+  const [loadingEnrollments, setLoadingEnrollments] = useState<boolean>(false)
+  const [error, setError] = useState<string | null>(null)
+
+  // Cargar enrollments del estudiante
+  useEffect(() => {
+    if (!token || !user) return
+    setLoadingEnrollments(true)
+    GetEnrollmentsStudent(token, user.username)
+      .then((data) => {
+        setEnrollments(data)
+        // Seleccionar el primer curso por defecto si no hay uno
+        if (data.length > 0 && courseId === null) {
+          setCourseId(data[0].course.id)
+        }
+      })
+      .catch((e) => {
+        console.error("Error obteniendo enrollments", e)
+        setError("No se pudieron cargar las materias")
+        setEnrollments([])
+      })
+      .finally(() => setLoadingEnrollments(false))
+  }, [token, user])
 
   useEffect(() => {
     if (!token || !user) return
+    // Si estamos filtrando por curso y aún no hay courseId (porque no llegó enrollments), no ejecutar
+    if (filterType === "course" && courseId === null) return
     setLoading(true)
-    const params = filterType === "course" ? { courseId } : { range: dateRange }
+    const params = filterType === "course" ? { courseId: courseId! } : { range: dateRange }
     getAttendanceHistory(token, user.username, params)
       .then((data) => setAttendances(data))
       .catch((error) => {
@@ -83,13 +107,24 @@ const AttendanceHistory = () => {
 
         <div className="filter-selector-wrapper">
           {filterType === "course" ? (
-            <select value={courseId} onChange={(e) => setCourseId(Number(e.target.value))} className="filter-select">
-              {COURSES.map((c) => (
-                <option key={c.id} value={c.id}>
-                  {c.name}
-                </option>
-              ))}
-            </select>
+            loadingEnrollments ? (
+              <p className="attendance-loading">Cargando materias...</p>
+            ) : error ? (
+              <p className="attendance-error">{error}</p>
+            ) : (
+              <select
+                value={courseId ?? ''}
+                onChange={(e) => setCourseId(Number(e.target.value))}
+                className="filter-select"
+                disabled={enrollments.length === 0}
+              >
+                {enrollments.map((en) => (
+                  <option key={en.id} value={en.course.id}>
+                    {en.course.name}
+                  </option>
+                ))}
+              </select>
+            )
           ) : (
             <select value={dateRange} onChange={(e) => setDateRange(e.target.value)} className="filter-select">
               {FILTERS.map((f) => (
@@ -111,6 +146,13 @@ const AttendanceHistory = () => {
           attendances.map((a) => {
             const info = getStatusInfo(a.status)
             const date = new Date(a.class_session.actual_start_time)
+            // Encontrar datos de la materia seleccionada
+            const selectedEnrollment = enrollments.find((en) => en.course.id === courseId)
+            const courseName = selectedEnrollment ? (selectedEnrollment.course.name || '').toUpperCase() : 'MATERIA'
+            const scheduleRange = selectedEnrollment
+              ? `${selectedEnrollment.start_time}-${selectedEnrollment.end_time}`
+              : `${format(date, 'HH:mm')}`
+            const classroom = selectedEnrollment ? selectedEnrollment.classroom : 'AULA'
             return (
               <div className="attendance-item" key={a.id}>
                 <div className="timeline-icon" style={{ background: info.color }}>
@@ -135,15 +177,15 @@ const AttendanceHistory = () => {
                   <div className="attendance-details">
                     <div className="detail-item">
                       <span className="detail-label">Clase</span>
-                      <span className="detail-value">MÉTODOS AGILES</span>
+                      <span className="detail-value">{courseName}</span>
                     </div>
                     <div className="detail-item">
                       <span className="detail-label">Horario</span>
-                      <span className="detail-value">{format(date, "HH:mm")}-19:30</span>
+                      <span className="detail-value">{scheduleRange}</span>
                     </div>
                     <div className="detail-item">
                       <span className="detail-label">Aula</span>
-                      <span className="detail-value">AY1825</span>
+                      <span className="detail-value">{classroom}</span>
                     </div>
                   </div>
                 </div>
