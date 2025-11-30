@@ -5,7 +5,7 @@ import CodeBox from '../components/dashboard/CodeBox'
 import { useLocation, useParams } from 'react-router'
 import { useEffect, useState } from 'react'
 import type { Schedule } from '../types/academic.types'
-import { GetScheduleById, CreateClassSession, GetClassSessionToday } from '../services/api'
+import { GetScheduleById, CreateClassSession, GetClassSessionToday, CloseClassSession } from '../services/api'
 import * as Api from '../services/api'
 import AttendanceList from '../components/dashboard/AttendanceList'
 import { useAuth } from '../hooks/auth-data'
@@ -96,10 +96,18 @@ const CodeSessionPage = () => {
         }
     }
 
-    const handleCloseSession = () => {
-        // Backend endpoint to close a session does not exist yet; simulate closing locally.
-        setSession(null)
-        setAttendanceCode(null)
+    const handleCloseSession = async () => {
+        if (!token || !session || !session.id) return;
+        setLoading(true);
+        try {
+            await CloseClassSession(token, String(session.id));
+            setSession((prev: any) => prev ? { ...prev, status: 'CLOSED' } : null);
+            setAttendanceCode(null);
+        } catch (err) {
+            console.error('Error closing class session', err);
+        } finally {
+            setLoading(false);
+        }
     }
     
     // Polling: when a session is active, fetch attendances immediately and every 5 seconds

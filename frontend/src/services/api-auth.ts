@@ -4,7 +4,7 @@ import type { LoginType, TokenType } from "../types/login.types";
 //Método que actualiza el access token usando el refresh token
 
 const httpClient = axios.create({
-    baseURL: API_URL as string,
+    baseURL: `${API_URL}/api`,
     headers: {
         'Accept': 'application/json',
         'Content-Type': 'application/json'

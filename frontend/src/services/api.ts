@@ -1,10 +1,20 @@
+export async function CloseClassSession(token: string, sessionId: string) {
+    if (!token || token === 'null' || token === 'undefined') {
+        throw new Error('No access token provided')
+    }
+    return await httpClient.put<any>(`class-session/${sessionId}/closed`, {}, {
+        headers: {
+            'Authorization': `Bearer ${token}`
+        }
+    }).then(response => response.data);
+}
 import axios from "axios";
 import type { Schedule } from "../types/academic.types";
 import { API_URL, ACCESS_TOKEN } from "../config/config";
 
 
 const httpClient = axios.create({
-    baseURL: API_URL as string,
+    baseURL: `${API_URL}/api`,
     headers: {
         'Accept': 'application/json',
         'Content-Type': 'application/json'
