@@ -1,7 +1,6 @@
 import axios from "axios";
 import { API_URL } from "../config/config";
 import type { LoginType, TokenType } from "../types/login.types";
-//Método que actualiza el access token usando el refresh token
 
 const httpClient = axios.create({
     baseURL: `${API_URL}/api`,
@@ -21,7 +20,6 @@ export async function refressAccessToken({ refreshToken }: { refreshToken: strin
     }
 }
 
-// Método que verifica que el access token sea válido
 export async function verifyAccessToken(token: string): Promise<boolean> {
     try {
         const response = await httpClient.post("token/verify/", { token });
@@ -31,13 +29,11 @@ export async function verifyAccessToken(token: string): Promise<boolean> {
     }
 }
 
-
 export async function createTokens(credentials: LoginType): Promise<TokenType> {
     try {
         const response = await httpClient.post<TokenType>("token/", credentials);
         return response.data;
     } catch (error: any) {
-        // Propaga el error para que el caller (login) lo capture y muestre mensaje adecuado
         throw error;
     }
 }

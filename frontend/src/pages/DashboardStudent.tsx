@@ -32,7 +32,6 @@ const DashboardStudent = () => {
         try {
             setLoading(true)
             const res = await RegisterAttendance(token ?? null, user.username, trimmed)
-            // Backend may return success message or object; adapt accordingly
             if (res && (res.success || res.id || res.attendance_code)) {
                 setMessage('Asistencia registrada correctamente')
             } else if (res && res.error) {

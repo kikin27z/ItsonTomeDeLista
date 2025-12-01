@@ -73,7 +73,6 @@
   background-color: #f0f8ff;
 }
 
-/* Timeline styling */
 .attendance-timeline {
   position: relative;
   padding-left: 40px;
@@ -85,8 +84,8 @@
   left: 12px;
   top: 10px;
   bottom: 0;
-  width: 2px; /* Enhanced timeline line - made it more visible and continuous */
-  background: #d0d0d0; /* Enhanced timeline line - made it more visible and continuous */
+  width: 2px; 
+  background: #d0d0d0;
 }
 
 .attendance-item {
@@ -97,20 +96,20 @@
 }
 
 .timeline-icon {
-  width: 24px; /* Improved alignment and removed emoji icon display */
-  height: 24px; /* Improved alignment and removed emoji icon display */
+  width: 24px; 
+  height: 24px; 
   border-radius: 50%;
   display: flex;
   align-items: center;
   justify-content: center;
   color: #ffffff;
-  font-size: 0; /* Improved alignment and removed emoji icon display */
+  font-size: 0;
   font-weight: bold;
   position: absolute;
-  left: -38px; /* Improved alignment and removed emoji icon display */
-  top: 10px; /* Improved alignment and removed emoji icon display */
+  left: -38px; 
+  top: 10px; 
   border: 3px solid #ffffff;
-  box-shadow: 0 0 0 1px #e0e0e0, 0 2px 8px rgba(0, 0, 0, 0.15); /* Improved alignment and removed emoji icon display */
+  box-shadow: 0 0 0 1px #e0e0e0, 0 2px 8px rgba(0, 0, 0, 0.15); 
   flex-shrink: 0;
 }
 
