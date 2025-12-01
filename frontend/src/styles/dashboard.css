@@ -347,6 +347,7 @@
     font-weight: 700;
     margin: 0;
     line-height: 1;
+    color: white;
 }
 
 /* Stat card variants */
@@ -1531,7 +1532,6 @@
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.08);
 }
 
-/* Responsive */
 @media (max-width: 768px) {
     .history-header {
         flex-direction: column;

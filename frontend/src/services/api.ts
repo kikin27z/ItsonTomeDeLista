@@ -40,6 +40,18 @@ export async function CloseClassSession(token: string, sessionId: string) {
         }
     }).then(response => response.data);
 }
+
+export async function ActivateClassSession(token: string, sessionId: string) {
+    if (!token || token === 'null' || token === 'undefined') {
+        throw new Error('No access token provided')
+    }
+    return await httpClient.put<any>(`class-session/${sessionId}/active`, {}, {
+        headers: {
+            'Authorization': `Bearer ${token}`
+        }
+    }).then(response => response.data);
+}
+
 import axios from "axios";
 import type { Schedule, Enrollment } from "../types/academic.types";
 import { API_URL, ACCESS_TOKEN } from "../config/config";

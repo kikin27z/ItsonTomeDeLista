@@ -3,7 +3,7 @@ import CodeBox from '../components/dashboard/CodeBox'
 import { useLocation, useParams, Link } from 'react-router'
 import { useEffect, useState } from 'react'
 import type { Schedule } from '../types/academic.types'
-import { GetScheduleById, CreateClassSession, GetClassSessionToday, CloseClassSession } from '../services/api'
+import { GetScheduleById, CreateClassSession, GetClassSessionToday, CloseClassSession, ActivateClassSession } from '../services/api'
 import * as Api from '../services/api'
 import AttendanceList from '../components/dashboard/AttendanceList'
 import { useAuth } from '../hooks/auth-data'
@@ -113,6 +113,24 @@ const CodeSessionPage = () => {
             setLoading(false);
         }
     }
+
+    const handleReactivateSession = async () => {
+        if (!token || !session || !session.id) return;
+        setLoading(true);
+        try {
+            await ActivateClassSession(token, String(session.id));
+            // Reactivar sesión y obtener el código de asistencia nuevamente
+            const updatedSession = await GetClassSessionToday(token, String(schedule!.id));
+            if (updatedSession) {
+                setSession(updatedSession);
+                if (updatedSession.attendance_code) setAttendanceCode(updatedSession.attendance_code);
+            }
+        } catch (err) {
+            console.error('Error reactivating class session', err);
+        } finally {
+            setLoading(false);
+        }
+    }
     
     // Polling: when a session is active, fetch attendances immediately and every 5 seconds
     useEffect(() => {
@@ -170,8 +188,8 @@ const CodeSessionPage = () => {
                             <CodeBox code={attendanceCode} />
                             <p className='dash-text-description txt-c'>Los alumnos pueden ingresar el número para registrar asistencia</p>
                         </>
-                    ) : session && session.status === 'CLOSED' ? (
-                        <p className='dash-text-description txt-c'>La sesión de asistencia de hoy ya fue cerrada.</p>
+                    ) : session?.status === 'CLOSED' ? (
+                        <p className='dash-text-description txt-c'>La sesión de asistencia de hoy está cerrada. Puedes reactivarla si es necesario.</p>
                     ) : (
                         <p className='dash-text-description txt-c'>No hay sesión de asistencia abierta. Presiona el botón para abrir una.</p>
                     )}
@@ -181,8 +199,12 @@ const CodeSessionPage = () => {
                             session.status === 'ACTIVE' ? (
                                 <button className='dash-btn dash-btn-close-sesion' onClick={handleCloseSession}>Cerrar sesión de Asistencia</button>
                             ) : (
-                                // Sesión cerrada: deshabilitar completamente abrir
-                                <button className='dash-btn dash-btn-style1' disabled title='La sesión de hoy ya está cerrada'>Sesión cerrada</button>
+                                <button 
+                                    className='dash-btn dash-btn-style1' 
+                                    onClick={handleReactivateSession}
+                                    disabled={loading}
+                                    title='Reactivar sesión de Asistencia'
+                                >Reactivar sesión de Asistencia</button>
                             )
                         ) : (
                             <button
