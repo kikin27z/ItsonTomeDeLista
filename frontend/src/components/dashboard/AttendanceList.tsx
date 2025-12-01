@@ -58,29 +58,50 @@ const statusLabel = (status: string) => {
 const AttendanceList = ({ attendances }: Props) => {
   return (
     <div className='attendance-list'>
+      <div className='attendance-header'>
+        <h4 className='attendance-title'>Lista de Asistencia</h4>
+        <span className='attendance-count'>{attendances?.length || 0} registros</span>
+      </div>
+
       <CodeSessionStats attendances={attendances} />
 
       {(!attendances || attendances.length === 0) ? (
-        <p className='dash-text-description'>No hay registros de asistencia aún.</p>
+        <div className='attendance-empty-state'>
+          <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+            <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/>
+            <circle cx="9" cy="7" r="4"/>
+            <line x1="19" y1="8" x2="19" y2="14"/>
+            <line x1="22" y1="11" x2="16" y2="11"/>
+          </svg>
+          <p className='empty-state-text'>No hay registros de asistencia aún</p>
+          <p className='empty-state-subtext'>Los estudiantes aparecerán aquí cuando registren su asistencia</p>
+        </div>
       ) : (
-        <table className='attendance-table'>
-          <thead>
-            <tr>
-              <th>Nombre</th>
-              <th>Estado</th>
-              <th>Fecha de registro</th>
-            </tr>
-          </thead>
-          <tbody>
-            {attendances.map(a => (
-              <tr key={a.id} className='attendance-row'>
-                <td className='attendance-cell name-cell'>{formatName(a.student)}</td>
-                <td className='attendance-cell status-cell'><span className={statusClass(a.status)}>{statusLabel(a.status)}</span></td>
-                <td className='attendance-cell time-cell'>{formatDate(a.registration_datetime)}</td>
+        <div className='attendance-table-wrapper'>
+          <table className='attendance-table'>
+            <thead>
+              <tr>
+                <th className='th-name'>Estudiante</th>
+                <th className='th-status'>Estado</th>
+                <th className='th-time'>Hora de Registro</th>
               </tr>
-            ))}
-          </tbody>
-        </table>
+            </thead>
+            <tbody>
+              {attendances.map(a => (
+                <tr key={a.id} className='attendance-row'>
+                  <td className='attendance-cell name-cell'>
+                    <div className='student-avatar'>{formatName(a.student).charAt(0).toUpperCase()}</div>
+                    <span className='student-name'>{formatName(a.student)}</span>
+                  </td>
+                  <td className='attendance-cell status-cell'>
+                    <span className={statusClass(a.status)}>{statusLabel(a.status)}</span>
+                  </td>
+                  <td className='attendance-cell time-cell'>{formatDate(a.registration_datetime)}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
       )}
     </div>
   )

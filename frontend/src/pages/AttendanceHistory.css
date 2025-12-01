@@ -1,0 +1,183 @@
+.attendance-history-container {
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 24px 20px;
+}
+
+.attendance-history-title {
+  font-size: 22px;
+  font-weight: 600;
+  color: #1a1a1a;
+  margin-bottom: 24px;
+  margin-top: 0;
+}
+
+.attendance-history-filters {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  margin-bottom: 32px;
+}
+
+.filter-button-group {
+  display: flex;
+  gap: 10px;
+}
+
+.filter-btn {
+  background: #ffffff;
+  border: 2px solid #0074d9;
+  color: #0074d9;
+  border-radius: 20px;
+  padding: 8px 18px;
+  font-weight: 600;
+  font-size: 13px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  white-space: nowrap;
+}
+
+.filter-btn:hover {
+  background: #f0f8ff;
+}
+
+.filter-btn.active {
+  background: #0074d9;
+  color: #ffffff;
+}
+
+.filter-selector-wrapper {
+  flex: 1;
+  max-width: 280px;
+}
+
+.filter-select {
+  width: 100%;
+  padding: 8px 16px;
+  border: 2px solid #0074d9;
+  border-radius: 20px;
+  font-size: 13px;
+  font-weight: 600;
+  color: #0074d9;
+  background: #ffffff;
+  cursor: pointer;
+  appearance: none;
+  background-image: url('data:image/svg+xml;utf8,<svg fill="%230074d9" height="24" viewBox="0 0 24 24" width="24" xmlns="http://www.w3.org/2000/svg"><path d="M7 10l5 5 5-5z"/></svg>');
+  background-repeat: no-repeat;
+  background-position: right 8px center;
+  background-size: 20px;
+  padding-right: 36px;
+}
+
+.filter-select:hover {
+  background-color: #f0f8ff;
+}
+
+/* Timeline styling */
+.attendance-timeline {
+  position: relative;
+  padding-left: 40px;
+}
+
+.attendance-timeline::before {
+  content: "";
+  position: absolute;
+  left: 12px;
+  top: 10px;
+  bottom: 0;
+  width: 2px; /* Enhanced timeline line - made it more visible and continuous */
+  background: #d0d0d0; /* Enhanced timeline line - made it more visible and continuous */
+}
+
+.attendance-item {
+  display: flex;
+  align-items: flex-start;
+  margin-bottom: 28px;
+  position: relative;
+}
+
+.timeline-icon {
+  width: 24px; /* Improved alignment and removed emoji icon display */
+  height: 24px; /* Improved alignment and removed emoji icon display */
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #ffffff;
+  font-size: 0; /* Improved alignment and removed emoji icon display */
+  font-weight: bold;
+  position: absolute;
+  left: -38px; /* Improved alignment and removed emoji icon display */
+  top: 10px; /* Improved alignment and removed emoji icon display */
+  border: 3px solid #ffffff;
+  box-shadow: 0 0 0 1px #e0e0e0, 0 2px 8px rgba(0, 0, 0, 0.15); /* Improved alignment and removed emoji icon display */
+  flex-shrink: 0;
+}
+
+.attendance-card {
+  background: #ffffff;
+  border-radius: 10px;
+  border: 1px solid #e8e8e8;
+  padding: 16px 18px;
+  flex: 1;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
+}
+
+.attendance-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 12px;
+  gap: 12px;
+}
+
+.attendance-date {
+  font-weight: 600;
+  color: #222222;
+  font-size: 13px;
+  text-transform: uppercase;
+  letter-spacing: 0.3px;
+}
+
+.attendance-status {
+  color: #ffffff;
+  border-radius: 6px;
+  padding: 4px 16px;
+  font-size: 12px;
+  font-weight: 700;
+  white-space: nowrap;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.attendance-details {
+  display: flex;
+  gap: 24px;
+  font-size: 13px;
+}
+
+.detail-item {
+  display: flex;
+  gap: 6px;
+}
+
+.detail-label {
+  font-weight: 600;
+  color: #555555;
+  text-transform: uppercase;
+  font-size: 11px;
+  letter-spacing: 0.3px;
+}
+
+.detail-value {
+  color: #222222;
+  font-weight: 500;
+}
+
+.attendance-loading,
+.attendance-empty {
+  text-align: center;
+  color: #777777;
+  padding: 32px 0;
+  font-size: 14px;
+}

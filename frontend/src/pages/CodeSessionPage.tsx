@@ -1,11 +1,9 @@
 import Box from '../components/dashboard/Box'
 import CodeBox from '../components/dashboard/CodeBox'
-// CodeSessionStats is now rendered inside `AttendanceList`.
-// CodeSessionStats is rendered inside `AttendanceList`.
-import { useLocation, useParams } from 'react-router'
+import { useLocation, useParams, Link } from 'react-router'
 import { useEffect, useState } from 'react'
 import type { Schedule } from '../types/academic.types'
-import { GetScheduleById, CreateClassSession, GetClassSessionToday } from '../services/api'
+import { GetScheduleById, CreateClassSession, GetClassSessionToday, CloseClassSession, ActivateClassSession } from '../services/api'
 import * as Api from '../services/api'
 import AttendanceList from '../components/dashboard/AttendanceList'
 import { useAuth } from '../hooks/auth-data'
@@ -19,7 +17,13 @@ const CodeSessionPage = () => {
     const [schedule, setSchedule] = useState<Schedule | null>(state?.schedule ?? null)
     const [loading, setLoading] = useState<boolean>(!state?.schedule)
     const [attendanceCode, setAttendanceCode] = useState<string | null>(null)
-    const [session, setSession] = useState<any | null>(null)
+    interface ClassSessionState {
+        id: number
+        status: 'ACTIVE' | 'CLOSED'
+        attendance_code?: string | null
+        attendances?: any[]
+    }
+    const [session, setSession] = useState<ClassSessionState | null>(null)
 
     useEffect(() => {
         const load = async () => {
@@ -31,7 +35,6 @@ const CodeSessionPage = () => {
                     const id = params.id!
                     const data = await GetScheduleById(token, id)
                     setSchedule(data)
-                    // After obtaining schedule, try to fetch an existing session for today
                     try {
                         const existing = await GetClassSessionToday(token, String(data.id))
                         if (existing) {
@@ -96,15 +99,43 @@ const CodeSessionPage = () => {
         }
     }
 
-    const handleCloseSession = () => {
-        // Backend endpoint to close a session does not exist yet; simulate closing locally.
-        setSession(null)
-        setAttendanceCode(null)
+    const handleCloseSession = async () => {
+        if (!token || !session || !session.id) return;
+        setLoading(true);
+        try {
+            await CloseClassSession(token, String(session.id));
+            // Mantener attendances ya cargadas, sólo mutar estado / code
+            setSession((prev) => prev ? { ...prev, status: 'CLOSED', attendance_code: null } : null);
+            setAttendanceCode(null);
+        } catch (err) {
+            console.error('Error closing class session', err);
+        } finally {
+            setLoading(false);
+        }
+    }
+
+    const handleReactivateSession = async () => {
+        if (!token || !session || !session.id) return;
+        setLoading(true);
+        try {
+            await ActivateClassSession(token, String(session.id));
+            // Reactivar sesión y obtener el código de asistencia nuevamente
+            const updatedSession = await GetClassSessionToday(token, String(schedule!.id));
+            if (updatedSession) {
+                setSession(updatedSession);
+                if (updatedSession.attendance_code) setAttendanceCode(updatedSession.attendance_code);
+            }
+        } catch (err) {
+            console.error('Error reactivating class session', err);
+        } finally {
+            setLoading(false);
+        }
     }
     
     // Polling: when a session is active, fetch attendances immediately and every 5 seconds
     useEffect(() => {
-        if (!session || !session.id || !token) return
+        // Sólo hacer polling si la sesión está activa
+        if (!session || !session.id || !token || session.status !== 'ACTIVE') return
         let mounted = true
         let intervalId: number | null = null
 
@@ -128,7 +159,7 @@ const CodeSessionPage = () => {
             mounted = false
             if (intervalId) clearInterval(intervalId)
         }
-    }, [session?.id, token])
+    }, [session?.id, session?.status, token])
     
 
     if (loading) return <p>Loading...</p>
@@ -137,28 +168,58 @@ const CodeSessionPage = () => {
         <main className='dash-main-container'>
             <Box extraClasses='dash-stats-container'>
                 <article>
-                    <h3>{schedule?.course?.name ?? 'Curso'}</h3>
-                    <p className='dash-text-description'>{schedule ? `${schedule.days_of_week} ${convertTo12HourFormat(schedule.start_time)} - ${convertTo12HourFormat(schedule.end_time)}` : ''}, {schedule?.classroom} </p>
-                    {attendanceCode && session ? (
+                    <div className='course-header-section'>
+                        <div className='course-info'>
+                            <h3>{schedule?.course?.name ?? 'Curso'}</h3>
+                            <p className='dash-text-description'>{schedule ? `${schedule.days_of_week} ${convertTo12HourFormat(schedule.start_time)} - ${convertTo12HourFormat(schedule.end_time)}` : ''}, {schedule?.classroom} </p>
+                        </div>
+                        <Link to="/dashboard/teacher/session-history" className='history-link-btn'>
+                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                                <path d="M3 12a9 9 0 0 1 9-9 9.75 9.75 0 0 1 6.74 2.74L21 8"/>
+                                <path d="M21 3v5h-5"/>
+                                <path d="M21 12a9 9 0 0 1-9 9 9.75 9.75 0 0 1-6.74-2.74L3 16"/>
+                                <path d="M8 16H3v5"/>
+                            </svg>
+                            Historial de asistencia
+                        </Link>
+                    </div>
+                    {session?.status === 'ACTIVE' && attendanceCode ? (
                         <>
                             <CodeBox code={attendanceCode} />
                             <p className='dash-text-description txt-c'>Los alumnos pueden ingresar el número para registrar asistencia</p>
                         </>
+                    ) : session?.status === 'CLOSED' ? (
+                        <p className='dash-text-description txt-c'>La sesión de asistencia de hoy está cerrada. Puedes reactivarla si es necesario.</p>
                     ) : (
                         <p className='dash-text-description txt-c'>No hay sesión de asistencia abierta. Presiona el botón para abrir una.</p>
                     )}
 
                     <div style={{ marginTop: 12, display: 'flex', gap: 12 }}>
-                        {session && session.status === 'ACTIVE' ? (
-                            <button className='dash-btn dash-btn-close-sesion' onClick={handleCloseSession}>Cerrar sesión de Asistencia</button>
+                        {session ? (
+                            session.status === 'ACTIVE' ? (
+                                <button className='dash-btn dash-btn-close-sesion' onClick={handleCloseSession}>Cerrar sesión de Asistencia</button>
+                            ) : (
+                                <button 
+                                    className='dash-btn dash-btn-style1' 
+                                    onClick={handleReactivateSession}
+                                    disabled={loading}
+                                    title='Reactivar sesión de Asistencia'
+                                >Reactivar sesión de Asistencia</button>
+                            )
                         ) : (
-                            <button className='dash-btn dash-btn-style1' onClick={handleOpenSession}>Abrir sesión de Asistencia</button>
+                            <button
+                                className='dash-btn dash-btn-style1'
+                                onClick={handleOpenSession}
+                                disabled={loading}
+                                title={loading ? 'Procesando...' : 'Abrir sesión de Asistencia'}
+                            >Abrir sesión de Asistencia</button>
                         )}
                     </div>
                 </article>
 
                 {session && <AttendanceList attendances={session.attendances ?? []} />}
             </Box>
+            
         </main>
     )
 }
