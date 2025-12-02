@@ -68,7 +68,7 @@ def ActivatedClassSession(request,session_id):
 def GetAttendaceByStudent(request,student_username):
     student = get_object_or_404(Profile, unique_id=student_username)
 
-    date_range = request.GET.get('range_date', 'last_week')
+    date_range = request.GET.get('range_date', 'semester')
     schedule_id = request.GET.get('schedule_id', None)
 
     attendances = AttendanceRecord.student_attendace_history(student, schedule_id, date_range)
