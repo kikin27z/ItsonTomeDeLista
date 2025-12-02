@@ -50,6 +50,7 @@ const SessionHistory = () => {
     fetchHistory()
   }, [token, selectedSchedule])
 
+  // Agrupar registros por estudiante
   const groupedByStudent = () => {
     if (!historyData) return []
     
@@ -167,6 +168,7 @@ const SessionHistory = () => {
           return
       }
       
+      // Crear URL y descargar
       const url = window.URL.createObjectURL(blob)
       const link = document.createElement('a')
       link.href = url

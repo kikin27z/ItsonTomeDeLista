@@ -13,7 +13,7 @@ const CodeSessionPage = () => {
     const { state } = useLocation()
     const params = useParams()
     const { token } = useAuth()
-
+    
     const [schedule, setSchedule] = useState<Schedule | null>(state?.schedule ?? null)
     const [loading, setLoading] = useState<boolean>(!state?.schedule)
     const [attendanceCode, setAttendanceCode] = useState<string | null>(null)
@@ -27,6 +27,7 @@ const CodeSessionPage = () => {
 
     useEffect(() => {
         const load = async () => {
+            // Only fetch schedule details on mount (do not fetch or create session automatically)
             if (!token) return
             setLoading(true)
             try {
@@ -41,10 +42,12 @@ const CodeSessionPage = () => {
                             setSession(existing)
                         }
                     } catch (e) {
+                        // If 400/403/401 occurs it will be logged by caller; ignore here
                         console.error('Error fetching today session on load', e)
                     }
                 }
                 else {
+                    // If schedule already present (from navigation state), try fetch existing session once
                     if (!session) {
                         try {
                             const existing = await GetClassSessionToday(token, String(schedule.id))
@@ -66,6 +69,7 @@ const CodeSessionPage = () => {
         load()
     }, [schedule, token, params.id])
 
+    // Handler to create/open a new class session when user clicks the button
     const handleOpenSession = async () => {
         if (!token || !schedule) return
         setLoading(true)
@@ -76,6 +80,7 @@ const CodeSessionPage = () => {
                 setSession(sessionResp)
             }
         } catch (err: any) {
+            // If session already created, try to fetch it and use it
             if (err?.response?.status === 400) {
                 try {
                     const existing = await GetClassSessionToday(token, String(schedule.id))
@@ -99,6 +104,7 @@ const CodeSessionPage = () => {
         setLoading(true);
         try {
             await CloseClassSession(token, String(session.id));
+            // Mantener attendances ya cargadas, sólo mutar estado / code
             setSession((prev) => prev ? { ...prev, status: 'CLOSED', attendance_code: null } : null);
             setAttendanceCode(null);
         } catch (err) {
@@ -113,6 +119,7 @@ const CodeSessionPage = () => {
         setLoading(true);
         try {
             await ActivateClassSession(token, String(session.id));
+            // Reactivar sesión y obtener el código de asistencia nuevamente
             const updatedSession = await GetClassSessionToday(token, String(schedule!.id));
             if (updatedSession) {
                 setSession(updatedSession);
@@ -124,8 +131,10 @@ const CodeSessionPage = () => {
             setLoading(false);
         }
     }
-
+    
+    // Polling: when a session is active, fetch attendances immediately and every 5 seconds
     useEffect(() => {
+        // Sólo hacer polling si la sesión está activa
         if (!session || !session.id || !token || session.status !== 'ACTIVE') return
         let mounted = true
         let intervalId: number | null = null
@@ -140,10 +149,10 @@ const CodeSessionPage = () => {
             }
         }
 
-
+        // initial immediate fetch
         fetchNow()
 
-
+        // start interval
         intervalId = window.setInterval(fetchNow, 5000)
 
         return () => {
@@ -151,7 +160,7 @@ const CodeSessionPage = () => {
             if (intervalId) clearInterval(intervalId)
         }
     }, [session?.id, session?.status, token])
-
+    
 
     if (loading) return <p>Loading...</p>
 
@@ -166,10 +175,10 @@ const CodeSessionPage = () => {
                         </div>
                         <Link to="/dashboard/teacher/session-history" className='history-link-btn'>
                             <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                                <path d="M3 12a9 9 0 0 1 9-9 9.75 9.75 0 0 1 6.74 2.74L21 8" />
-                                <path d="M21 3v5h-5" />
-                                <path d="M21 12a9 9 0 0 1-9 9 9.75 9.75 0 0 1-6.74-2.74L3 16" />
-                                <path d="M8 16H3v5" />
+                                <path d="M3 12a9 9 0 0 1 9-9 9.75 9.75 0 0 1 6.74 2.74L21 8"/>
+                                <path d="M21 3v5h-5"/>
+                                <path d="M21 12a9 9 0 0 1-9 9 9.75 9.75 0 0 1-6.74-2.74L3 16"/>
+                                <path d="M8 16H3v5"/>
                             </svg>
                             Historial de asistencia
                         </Link>
@@ -190,8 +199,8 @@ const CodeSessionPage = () => {
                             session.status === 'ACTIVE' ? (
                                 <button className='dash-btn dash-btn-close-sesion' onClick={handleCloseSession}>Cerrar sesión de Asistencia</button>
                             ) : (
-                                <button
-                                    className='dash-btn dash-btn-style1'
+                                <button 
+                                    className='dash-btn dash-btn-style1' 
                                     onClick={handleReactivateSession}
                                     disabled={loading}
                                     title='Reactivar sesión de Asistencia'
@@ -210,7 +219,7 @@ const CodeSessionPage = () => {
 
                 {session && <AttendanceList attendances={session.attendances ?? []} />}
             </Box>
-
+            
         </main>
     )
 }

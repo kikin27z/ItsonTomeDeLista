@@ -1,9 +1,11 @@
 export interface Course {
     id: number;
     name: string;
+    // El backend devuelve credits como string; mantenemos compatibilidad flexible
     credits: string | number;
+    // Puede venir como 'department' o mal escrito 'deparment'; ambas opcionales
     department?: string;
-    deparment?: string; 
+    deparment?: string; // tolerancia a posible typo en backend
     key_name: string;
 }
 
@@ -18,7 +20,7 @@ export interface Schedule {
     days_of_week: string;
 }
 
-
+// Representa la inscripción de un estudiante a un curso (enrollment)
 export interface Enrollment {
     id: number;
     course: Course;

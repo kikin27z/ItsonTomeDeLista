@@ -50,12 +50,14 @@ const AttendanceHistory = () => {
   const [loadingEnrollments, setLoadingEnrollments] = useState<boolean>(false)
   const [error, setError] = useState<string | null>(null)
 
+  // Cargar enrollments del estudiante
   useEffect(() => {
     if (!token || !user) return
     setLoadingEnrollments(true)
     GetEnrollmentsStudent(token, user.username)
       .then((data) => {
         setEnrollments(data)
+        // Seleccionar el primer curso por defecto si no hay uno
         if (data.length > 0 && courseId === null) {
           setCourseId(data[0].course.id)
         }
@@ -70,6 +72,7 @@ const AttendanceHistory = () => {
 
   useEffect(() => {
     if (!token || !user) return
+    // Si estamos filtrando por curso y aún no hay courseId (porque no llegó enrollments), no ejecutar
     if (filterType === "course" && courseId === null) return
     setLoading(true)
     const params = filterType === "course" ? { courseId: courseId! } : { range: dateRange }
@@ -143,6 +146,7 @@ const AttendanceHistory = () => {
           attendances.map((a) => {
             const info = getStatusInfo(a.status)
             const date = new Date(a.class_session.actual_start_time)
+            // Encontrar datos de la materia seleccionada
             const selectedEnrollment = enrollments.find((en) => en.course.id === courseId)
             const courseName = selectedEnrollment ? (selectedEnrollment.course.name || '').toUpperCase() : 'MATERIA'
             const scheduleRange = selectedEnrollment
